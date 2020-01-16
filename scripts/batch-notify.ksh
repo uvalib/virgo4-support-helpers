@@ -5,17 +5,13 @@
 #set -x
 
 # check command line use
-if [ $# -lt 1 ]; then
-   echo "use: $(basename $0) <input file> [sleep seconds]"
+if [ $# -lt 2 ]; then
+   echo "use: $(basename $0) <input file> <sleep seconds>"
    exit 1
 fi
 
 INPUT_FILE=$1
-
-# see if we passed a sleep time
-if [ $# -eq 2 ]; then
-   SLEEP_TIME=$2
-fi
+SLEEP_TIME=$2
 
 if [ ! -f $INPUT_FILE ]; then
    echo "ERROR: $INPUT_FILE is not available, aborting"
@@ -52,7 +48,7 @@ for obj in $(<$INPUT_FILE); do
       exit $res
    fi
 
-   if [ -n "$SLEEP_TIME" ]; then
+   if [ "$SLEEP_TIME" != "0" ]; then
       sleep $SLEEP_TIME
    fi
 done
