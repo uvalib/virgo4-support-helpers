@@ -1,0 +1,44 @@
+Doing a production re-index of MARC content
+
+- Disable all notifier services
+
+- Wait for in-flight processing to complete
+
+- Disable SOLR replication
+
+- Shutdown SOLR master
+
+- Clean index.
+
+- Deploy updated configuration (if necessary).
+
+- Restart SOLR
+
+- Purge source cache
+
+- Purge any Sirsi notifications that have arrived (we will replay these later).
+
+- Restart Sirsi update notifier
+
+- Send notifications for all Sirsi "full dump" files and wait for complete.
+
+- Send notifications for all Sirsi "update" files since "full dump" dataset and wait for complete.
+
+- Purge any Hathi notifications that have arrived (we will replay these later).
+
+- Restart Hathi update notifier.
+
+- Send notifications for all Hathi "full dump" files and wait for complete.
+
+- Send notifications for all Hathi "update" files since "full dump" dataset and wait for complete.
+
+- Restart Dynamic update notifier.
+
+- Send notifications for all Dynamic files and wait for complete.
+
+- Restart doc delete notifier.
+
+- Send notifications for all appropriate "delete" files and wait for complete.
+
+- Restart replication.
+
