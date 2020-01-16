@@ -28,6 +28,10 @@ YEAR=$(date "+%Y")
 
 # tool definition
 TOOL=scripts/s3-list.ksh
+if [ ! -x $TOOL ]; then
+   echo "ERROR: $TOOL is not available, aborting"
+   exit 1
+fi
 
 # temp file definition
 TMPFILE=/tmp/list-doc-delete.$$
