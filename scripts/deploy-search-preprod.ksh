@@ -110,16 +110,20 @@ for service in ils-connector-ws \
 
    esac
 
-   cd $BASE_DIR/$service
-   exit_on_error $? "$service asset directory missing"
-
    echo "Deploy $service at: $TAG"
 
    if [ $LIVE_RUN == true ]; then
+
+      cd $BASE_DIR/$service
+      exit_on_error $? "$service asset directory missing"
+
+      $TERRAFORM_TOOL init
+      exit_on_error $? "$service init failed"
+
       $TERRAFORM_TOOL workspace select test
       exit_on_error $? "$service test workspace unavailable"
 
-      $TERRAFORM_TOOL apply --var container_tag=$TAG
+      $TERRAFORM_TOOL apply -auto-approve --var container_tag=$TAG
       res=$?
 
       $TERRAFORM_TOOL workspace select default

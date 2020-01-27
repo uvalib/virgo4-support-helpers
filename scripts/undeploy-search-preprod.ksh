@@ -62,10 +62,13 @@ for service in ils-connector-ws \
       cd $BASE_DIR/$service
       exit_on_error $? "$service asset directory missing"
 
+      $TERRAFORM_TOOL init
+      exit_on_error $? "$service init failed"
+
       $TERRAFORM_TOOL workspace select test
       exit_on_error $? "$service test workspace unavailable"
 
-      $TERRAFORM_TOOL destroy
+      $TERRAFORM_TOOL destroy -auto-approve
       res=$?
 
       # special case to ensure the generated files remain after we do a terraform destroy
