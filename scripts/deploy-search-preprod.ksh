@@ -73,6 +73,10 @@ ensure_tag_defined "$POOL_EDS_WS_TAG" "POOL_EDS_WS_TAG"
 POOL_SOLR_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-pool-solr-ws.tag)
 ensure_tag_defined "$POOL_SOLR_WS_TAG" "POOL_SOLR_WS_TAG"
 
+if [ $LIVE_RUN == false ]; then
+   echo "Dry running... add \"y\" to the command line to actually deploy"
+fi
+
 BASE_DIR=$(realpath $TERRAFORM_ASSETS)/virgo4.lib.virginia.edu/ecs-tasks/production
 
 for service in ils-connector-ws \

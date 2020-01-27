@@ -11,7 +11,7 @@ SCRIPT_DIR=$(dirname $FULL_NAME)
 . $SCRIPT_DIR/common.ksh
 
 function show_use_and_exit {
-   error_and_exit "use: $(basename $0) <terraform directory>"
+   error_and_exit "use: $(basename $0) <terraform directory> [undeploy=\"y\"]"
 }
 
 # ensure correct usage
@@ -22,6 +22,16 @@ fi
 # input parameters for clarity
 TERRAFORM_ASSETS=$1
 shift
+LIVE_RUN=${1:-false}
+
+# determine if this is a live run or not
+if [ -n "$LIVE_RUN" ]; then
+   if [ $LIVE_RUN == "y" ]; then
+      LIVE_RUN=true
+   else
+      LIVE_RUN=false
+   fi
+fi
 
 # check our environment requirements
 check_aws_environment
@@ -33,6 +43,10 @@ ensure_tool_available $TERRAFORM_TOOL
 # ensure the terraform asset environment exists
 ensure_dir_exists $TERRAFORM_ASSETS/virgo4.lib.virginia.edu
 
+if [ $LIVE_RUN == false ]; then
+   echo "Dry running... add \"y\" to the command line to actually undeploy"
+fi
+
 # define the location of the terraform assets for the service
 BASE_DIR=$(realpath $TERRAFORM_ASSETS)/virgo4.lib.virginia.edu/ecs-tasks/production
 
@@ -42,24 +56,29 @@ for service in ils-connector-ws \
             pool-eds-ws \
             pool-solr-ws; do
 
-   cd $BASE_DIR/$service
-   exit_on_error $? "$service asset directory missing"
+   echo "Undeploy $service"
 
-   $TERRAFORM_TOOL workspace select test
-   exit_on_error $? "$service test workspace unavailable"
+   if [ $LIVE_RUN == true ]; then
+      cd $BASE_DIR/$service
+      exit_on_error $? "$service asset directory missing"
 
-   $TERRAFORM_TOOL destroy
-   res=$?
+      $TERRAFORM_TOOL workspace select test
+      exit_on_error $? "$service test workspace unavailable"
 
-   # special case to ensure the generated files remain after we do a terraform destroy
-   if [ $service == "pool-solr-ws" ]; then
-      git checkout head *generated*
+      $TERRAFORM_TOOL destroy
+      res=$?
+
+      # special case to ensure the generated files remain after we do a terraform destroy
+      if [ $service == "pool-solr-ws" ]; then
+         git checkout head *generated*
+      fi
+
+      $TERRAFORM_TOOL workspace select default
+      exit_on_error $? "$service test workspace unavailable"
+
+      exit_on_error $res "$service destroy failed"
    fi
 
-   $TERRAFORM_TOOL workspace select default
-   exit_on_error $? "$service test workspace unavailable"
-
-   exit_on_error $res "$service destroy failed"
 done
 
 # all over
