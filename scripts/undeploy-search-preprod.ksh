@@ -31,9 +31,7 @@ TERRAFORM_TOOL=terraform
 ensure_tool_available $TERRAFORM_TOOL
 
 # ensure the terraform asset environment exists
-if [ ! -d $TERRAFORM_ASSETS/virgo4.lib.virginia.edu ]; then
-   error_and_exit "$TERRAFORM_ASSETS/virgo4.lib.virginia.edu is not available"
-fi
+ensure_dir_exists $TERRAFORM_ASSETS/virgo4.lib.virginia.edu
 
 # define the location of the terraform assets for the service
 BASE_DIR=$(realpath $TERRAFORM_ASSETS)/virgo4.lib.virginia.edu/ecs-tasks/production

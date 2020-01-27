@@ -52,14 +52,10 @@ TERRAFORM_TOOL=terraform
 ensure_tool_available $TERRAFORM_TOOL
 
 # ensure the tag location exists
-if [ ! -d $TAG_DIRECTORY/tags ]; then
-   error_and_exit "$TAG_DIRECTORY/tags is not available"
-fi
+ensure_dir_exists $TAG_DIRECTORY/tags
 
 # ensure the terraform asset environment exists
-if [ ! -d $TERRAFORM_ASSETS/virgo4.lib.virginia.edu ]; then
-   error_and_exit "$TERRAFORM_ASSETS/virgo4.lib.virginia.edu is not available"
-fi
+ensure_dir_exists $TERRAFORM_ASSETS/virgo4.lib.virginia.edu
 
 # get our version tags
 ILS_CONNECTOR_WS_TAG=$(cat $TAG_DIRECTORY/tags/ils-connector.tag)
