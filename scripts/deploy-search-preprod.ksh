@@ -109,7 +109,7 @@ for service in ils-connector-ws \
    cd $BASE_DIR/$service
    exit_on_error $? "$service asset directory missing"
 
-   echo "Deploy $service at $TAG..."
+   echo "Deploy $service at: $TAG"
 
    if [ $LIVE_RUN == true ]; then
       $TERRAFORM_TOOL workspace select test
