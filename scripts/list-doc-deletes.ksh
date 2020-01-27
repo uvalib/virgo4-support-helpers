@@ -46,7 +46,7 @@ if [ $res -ne 0 ]; then
 fi
 
 # print all non-zero length objects
-cat $TMPFILE | awk '{printf "%s %s\n", $3, $4}' | grep "deletes-$YEAR" | grep -v "^0" | awk -v BUCKET=$BUCKET '{printf "%s/%s\n", BUCKET, $2}'
+cat $TMPFILE | awk '{printf "%s %s\n", $3, $4}' | grep -v "^0" | awk -v BUCKET=$BUCKET '{printf "%s/%s\n", BUCKET, $2}'
 
 # remove the tempfile
 rm $TMPFILE > /dev/null 2>&1
