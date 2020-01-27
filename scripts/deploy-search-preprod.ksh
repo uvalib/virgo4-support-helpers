@@ -5,24 +5,13 @@
 
 #set -x
 
+# source common helpers
+FULL_NAME=$(realpath $0)
+SCRIPT_DIR=$(dirname $FULL_NAME)
+. $SCRIPT_DIR/common.ksh
+
 function show_use_and_exit {
-   echo "use: $(basename $0) <tag directory> <terraform directory> [deploy=\"y\"]" >&2
-   exit 1
-}
-
-# show the error message and exit
-function error_and_exit {
-   echo "$*" >&2
-   exit 1
-}
-
-# exit if an error occurrs
-function exit_on_error {
-   local STATUS=$1
-   local MESSAGE=$2
-   if [ $STATUS -ne 0 ]; then
-      error_and_exit "$MESSAGE"
-   fi
+   error_and_exit "use: $(basename $0) <tag directory> <terraform directory> [deploy=\"y\"]"
 }
 
 # ensure our build tags are defined
@@ -31,17 +20,6 @@ function ensure_tag_defined {
    local TAG_NAME=$2
    if [ -z "$TAG_VALUE" ]; then
       error_and_exit "$TAG_NAME is not defined"
-   fi
-}
-
-# ensure a required tool is available
-function ensure_tool_available {
-
-   local TOOL_NAME=$1
-   which $TOOL_NAME > /dev/null 2>&1
-   res=$?
-   if [ $res -ne 0 ]; then
-      error_and_exit "$TOOL_NAME is not available in this environment"
    fi
 }
 
@@ -67,15 +45,7 @@ if [ -n "$LIVE_RUN" ]; then
 fi
 
 # check our environment requirements
-if [ -z "$AWS_ACCESS_KEY_ID" ]; then
-   error_and_exit "AWS_ACCESS_KEY_ID is not defined in the environment"
-fi
-if [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
-   error_and_exit "AWS_SECRET_ACCESS_KEY is not defined in the environment"
-fi
-if [ -z "$AWS_DEFAULT_REGION" ]; then
-   error_and_exit "AWS_DEFAULT_REGION is not defined in the environment"
-fi
+check_aws_environment
 
 # ensure we have the necessary tools available
 TERRAFORM_TOOL=terraform
