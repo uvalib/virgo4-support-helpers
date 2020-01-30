@@ -14,15 +14,6 @@ function show_use_and_exit {
    error_and_exit "use: $(basename $0) <tag directory> <terraform directory> [deploy=\"y\"]"
 }
 
-# ensure our build tags are defined
-function ensure_tag_defined {
-   local TAG_VALUE=$1
-   local TAG_NAME=$2
-   if [ -z "$TAG_VALUE" ]; then
-      error_and_exit "$TAG_NAME is not defined"
-   fi
-}
-
 # ensure correct usage
 if [ $# -lt 2 ]; then
    show_use_and_exit
@@ -59,19 +50,19 @@ ensure_dir_exists $TERRAFORM_ASSETS/virgo4.lib.virginia.edu
 
 # get our version tags
 ILS_CONNECTOR_WS_TAG=$(cat $TAG_DIRECTORY/tags/ils-connector.tag)
-ensure_tag_defined "$ILS_CONNECTOR_WS_TAG" "ILS_CONNECTOR_WS_TAG"
+ensure_var_defined "$ILS_CONNECTOR_WS_TAG" "ILS_CONNECTOR_WS_TAG"
 
 CLIENT_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-client.tag)
-ensure_tag_defined "$CLIENT_WS_TAG" "CLIENT_WS_TAG"
+ensure_var_defined "$CLIENT_WS_TAG" "CLIENT_WS_TAG"
 
 SEARCH_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-search-ws.tag)
-ensure_tag_defined "$SEARCH_WS_TAG" "SEARCH_WS_TAG"
+ensure_var_defined "$SEARCH_WS_TAG" "SEARCH_WS_TAG"
 
 POOL_EDS_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-pool-eds-ws.tag)
-ensure_tag_defined "$POOL_EDS_WS_TAG" "POOL_EDS_WS_TAG"
+ensure_var_defined "$POOL_EDS_WS_TAG" "POOL_EDS_WS_TAG"
 
 POOL_SOLR_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-pool-solr-ws.tag)
-ensure_tag_defined "$POOL_SOLR_WS_TAG" "POOL_SOLR_WS_TAG"
+ensure_var_defined "$POOL_SOLR_WS_TAG" "POOL_SOLR_WS_TAG"
 
 if [ $LIVE_RUN == false ]; then
    echo "Dry running... add \"y\" to the command line to actually deploy"

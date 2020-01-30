@@ -47,14 +47,17 @@ function ensure_file_exists {
 # check our AWS environment requirements
 function check_aws_environment {
 
-   if [ -z "$AWS_ACCESS_KEY_ID" ]; then
-      error_and_exit "AWS_ACCESS_KEY_ID is not defined in the environment"
-   fi
-   if [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
-      error_and_exit "AWS_SECRET_ACCESS_KEY is not defined in the environment"
-   fi
-   if [ -z "$AWS_DEFAULT_REGION" ]; then
-      error_and_exit "AWS_DEFAULT_REGION is not defined in the environment"
+   ensure_var_defined "$AWS_ACCESS_KEY_ID" "AWS_ACCESS_KEY_ID"
+   ensure_var_defined "$AWS_SECRET_ACCESS_KEY" "AWS_SECRET_ACCESS_KEY"
+   ensure_var_defined "$AWS_DEFAULT_REGION" "AWS_DEFAULT_REGION"
+}
+
+# ensure a specific variable defined
+function ensure_var_defined {
+   local VAR_VALUE=$1
+   local VAR_NAME=$2
+   if [ -z "$VAR_VALUE" ]; then
+      error_and_exit "$VAR_NAME is not defined"
    fi
 }
 
