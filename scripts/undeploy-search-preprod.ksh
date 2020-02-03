@@ -68,7 +68,8 @@ for service in ils-connector-ws \
       $TERRAFORM_TOOL workspace select test
       exit_on_error $? "$service test workspace unavailable"
 
-      $TERRAFORM_TOOL destroy -auto-approve
+      # stop output evaluation which can error when no infrastructure
+      TF_WARN_OUTPUT_ERRORS=1 $TERRAFORM_TOOL destroy -auto-approve
       res=$?
 
       # special case to ensure the generated files remain after we do a terraform destroy
