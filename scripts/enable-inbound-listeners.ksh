@@ -38,9 +38,10 @@ fi
 CWD=$(pwd)
 
 # for each service
-for service in virgo4-cache-reprocess \
-               virgo4-doc-delete \
+for service in virgo4-doc-delete \
                virgo4-doc-ingest \
+               virgo4-hathi-cache-reprocess \
+               virgo4-sirsi-cache-reprocess \
                virgo4-dynamic-marc-ingest \
                virgo4-hathi-marc-ingest \
                virgo4-sirsi-marc-ingest; do
