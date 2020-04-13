@@ -61,6 +61,9 @@ ensure_var_defined "$POOL_EDS_WS_TAG" "POOL_EDS_WS_TAG"
 POOL_JMRL_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-pool-jmrl-ws.tag)
 ensure_var_defined "$POOL_JMRL_WS_TAG" "POOL_JMRL_WS_TAG"
 
+POOL_WORLDCAT_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-pool-worldcat-ws.tag)
+ensure_var_defined "$POOL_WORLDCAT_WS_TAG" "POOL_WORLDCAT_WS_TAG"
+
 POOL_SOLR_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-pool-solr-ws.tag)
 ensure_var_defined "$POOL_SOLR_WS_TAG" "POOL_SOLR_WS_TAG"
 
@@ -76,12 +79,13 @@ fi
 
 BASE_DIR=$(realpath $TERRAFORM_ASSETS)/virgo4.lib.virginia.edu/ecs-tasks/production
 
-for service in ils-connector-ws \
-               pool-eds-ws      \
-               pool-jmrl-ws     \
-               pool-solr-ws     \
-               search-ws        \
-               suggestor-ws     \
+for service in ils-connector-ws     \
+               pool-eds-ws          \
+               pool-jmrl-ws         \
+               pool-worldcat-ws     \
+               pool-solr-ws         \
+               search-ws            \
+               suggestor-ws         \
                virgo4-client; do
 
    # ensure we use the correct tag file
@@ -97,6 +101,10 @@ for service in ils-connector-ws \
 
      pool-jmrl-ws)
         TAG=$POOL_JMRL_WS_TAG
+        ;;
+
+     pool-worldcat-ws)
+        TAG=$POOL_WORLDCAT_WS_TAG
         ;;
 
      pool-solr-ws)

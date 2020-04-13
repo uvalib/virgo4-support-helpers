@@ -50,12 +50,13 @@ fi
 # define the location of the terraform assets for the service
 BASE_DIR=$(realpath $TERRAFORM_ASSETS)/virgo4.lib.virginia.edu/ecs-tasks/production
 
-for service in ils-connector-ws \
-               pool-eds-ws      \
-               pool-jmrl-ws     \
-               pool-solr-ws     \
-               search-ws        \
-               suggestor-ws     \
+for service in ils-connector-ws     \
+               pool-eds-ws          \
+               pool-jmrl-ws         \
+               pool-worldcat-ws     \
+               pool-solr-ws         \
+               search-ws            \
+               suggestor-ws         \
                virgo4-client; do
 
    echo "Undeploy $service"
