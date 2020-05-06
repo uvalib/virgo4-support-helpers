@@ -11,16 +11,18 @@ SCRIPT_DIR=$(dirname $FULL_NAME)
 . $SCRIPT_DIR/common.ksh
 
 function show_use_and_exit {
-   error_and_exit "use: $(basename $0) <tag directory> <pg env> [deploy=\"y\"]"
+   error_and_exit "use: $(basename $0) <tag directory> <terraform directory> <pg env> [deploy=\"y\"]"
 }
 
 # ensure correct usage
-if [ $# -lt 2 ]; then
+if [ $# -lt 3 ]; then
    show_use_and_exit
 fi
 
 # input parameters for clarity
 TAG_DIRECTORY=$1
+shift
+TERRAFORM_ASSETS=$1
 shift
 DATABASE_ENV=$1
 shift
@@ -35,11 +37,14 @@ if [ -n "$LIVE_RUN" ]; then
    fi
 fi
 
-# ensure our pg environment exist
-ensure_file_exists $DATABASE_ENV
-
 # ensure the tag location exists
 ensure_dir_exists $TAG_DIRECTORY/tags
+
+# ensure the terraform environment exists
+ensure_dir_exists $TERRAFORM_ASSETS/scripts
+
+# ensure our pg environment exist
+ensure_file_exists $DATABASE_ENV
 
 # ensure our docker environment exists
 ensure_var_defined "$DOCKER_HOST" "DOCKER_HOST"
@@ -50,8 +55,6 @@ ensure_var_defined "$AWS_REGION" "AWS_REGION"
 # ensure we have the necessary tools available
 DOCKER_TOOL=docker
 ensure_tool_available $DOCKER_TOOL
-AWS_TOOL=aws
-ensure_tool_available $AWS_TOOL
 
 # get our version tag
 CLIENT_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-client.tag)
@@ -77,7 +80,13 @@ echo "Running migration at $CLIENT_TAG against $DBHOST"
 # if we are live running
 if [ $LIVE_RUN == true ]; then
 
-   $($AWS_TOOL ecr get-login --no-include-email --region $AWS_REGION)
+   # authenticate with the registry
+   $TERRAFORM_ASSETS/scripts/ecr-authenticate.ksh
+   res=$?
+   if [ $res -ne 0 ]; then
+      echo "Registry authticate FAILED"
+      exit $res
+   fi
 
    # migrate entry point
    DOCKER_ENTRY="--entrypoint /virgo4-client/scripts/migrate.sh"
@@ -88,7 +97,6 @@ if [ $LIVE_RUN == true ]; then
    # run the migrate
    $DOCKER_TOOL run $DOCKER_ENTRY $DOCKER_ENV $REGISTRY/$CLIENT_IMAGE:$CLIENT_TAG
    res=$?
-
    if [ $res -ne 0 ]; then
       echo "Migrate process FAILED"
       exit $res
