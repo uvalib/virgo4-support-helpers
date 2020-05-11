@@ -5,12 +5,25 @@
 #set -x
 
 # check command line use
-if [ $# -ne 1 ]; then
-   echo "use: $(basename $0) <staging|production>"
+if [ $# -ne 2 ]; then
+   echo "use: $(basename $0) <default|image> <staging|production>"
    exit 1
 fi
 
+SOURCE=$1
+shift
 ENVIRONMENT=$1
+shift
+
+case $SOURCE in
+   default|image)
+   ;;
+
+   *) echo "ERROR: specify default or image, aborting"
+   exit 1
+   ;;
+esac
+
 case $ENVIRONMENT in
    staging|production)
    ;;
@@ -36,7 +49,7 @@ fi
 # temp file definition
 TMPFILE=/tmp/list-doc-delete.$$
 
-BUCKET_PATH=$BUCKET/doc-delete/$YEAR
+BUCKET_PATH=$BUCKET/doc-delete/$SOURCE/$YEAR
 $TOOL $BUCKET_PATH > $TMPFILE
 res=$?
 
