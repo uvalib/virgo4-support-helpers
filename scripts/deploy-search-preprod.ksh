@@ -49,11 +49,20 @@ ensure_dir_exists $TAG_DIRECTORY/tags
 ensure_dir_exists $TERRAFORM_ASSETS/virgo4.lib.virginia.edu
 
 # get our version tags
+CITATIONS_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-citations-ws.tag)
+ensure_var_defined "$CITATIONS_WS_TAG" "CITATIONS_WS_TAG"
+
 CLIENT_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-client.tag)
 ensure_var_defined "$CLIENT_WS_TAG" "CLIENT_WS_TAG"
 
+DIGITAL_CONTENT_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-digital-content-ws.tag)
+ensure_var_defined "$DIGITAL_CONTENT_WS_TAG" "DIGITAL_CONTENT_WS_TAG"
+
 ILS_CONNECTOR_WS_TAG=$(cat $TAG_DIRECTORY/tags/ils-connector.tag)
 ensure_var_defined "$ILS_CONNECTOR_WS_TAG" "ILS_CONNECTOR_WS_TAG"
+
+PDA_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-pda-ws.tag)
+ensure_var_defined "$PDA_WS_TAG" "PDA_WS_TAG"
 
 POOL_EDS_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-pool-eds-ws.tag)
 ensure_var_defined "$POOL_EDS_WS_TAG" "POOL_EDS_WS_TAG"
@@ -79,11 +88,14 @@ fi
 
 BASE_DIR=$(realpath $TERRAFORM_ASSETS)/virgo4.lib.virginia.edu/ecs-tasks/production
 
-for service in ils-connector-ws     \
+for service in citations-ws         \
+               digital-content-ws   \
+               ils-connector-ws     \
+               pda-ws               \
                pool-eds-ws          \
                pool-jmrl-ws         \
-               pool-worldcat-ws     \
                pool-solr-ws         \
+               pool-worldcat-ws     \
                search-ws            \
                suggestor-ws         \
                virgo4-client; do
@@ -91,8 +103,20 @@ for service in ils-connector-ws     \
    # ensure we use the correct tag file
    case $service in
 
+     citations-ws)
+        TAG=$CITATIONS_WS_TAG
+        ;;
+
+     digital-content-ws)
+        TAG=$DIGITAL_CONTENT_WS_TAG
+        ;;
+
      ils-connector-ws)
         TAG=$ILS_CONNECTOR_WS_TAG
+        ;;
+
+     pda-ws)
+        TAG=$PDA_WS_TAG
         ;;
 
      pool-eds-ws)
@@ -125,7 +149,7 @@ for service in ils-connector-ws     \
 
    esac
 
-   echo "Deploy $service at: $TAG"
+   printf "Deploying %18s: %s\n" $service $TAG
 
    if [ $LIVE_RUN == true ]; then
 
