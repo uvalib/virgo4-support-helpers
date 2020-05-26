@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# A helper to deploy the search preproduction environment based on the current version tags
+# A helper to clone a postgres database.
 #
 
 #set -x
@@ -11,7 +11,7 @@ SCRIPT_DIR=$(dirname $FULL_NAME)
 . $SCRIPT_DIR/common.ksh
 
 function show_use_and_exit {
-   error_and_exit "use: $(basename $0) <pg source env> <pc target env>"
+   error_and_exit "use: $(basename $0) <pg source env> <pg target env>"
 }
 
 # ensure correct usage
