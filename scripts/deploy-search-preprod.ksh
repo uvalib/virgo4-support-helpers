@@ -20,9 +20,9 @@ if [ $# -lt 2 ]; then
 fi
 
 # input parameters for clarity
-TAG_DIRECTORY=$1
+TAG_DIRECTORY=$(realpath $1)
 shift
-TERRAFORM_ASSETS=$1
+TERRAFORM_ASSETS=$(realpath $1)
 shift
 LIVE_RUN=${1:-false}
 
@@ -82,11 +82,15 @@ ensure_var_defined "$SEARCH_WS_TAG" "SEARCH_WS_TAG"
 SUGGESTOR_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-suggestor-ws.tag)
 ensure_var_defined "$SUGGESTOR_WS_TAG" "SUGGESTOR_WS_TAG"
 
-if [ $LIVE_RUN == false ]; then
+# capture the commit tag or happy log message
+if [ $LIVE_RUN == true ]; then
+   cd $TERRAFORM_ASSETS
+   git rev-parse HEAD > $TAG_DIRECTORY/tags/terraform-infrastructure.hash
+else
    echo "Dry running... add \"y\" to the command line to actually deploy"
 fi
 
-BASE_DIR=$(realpath $TERRAFORM_ASSETS)/virgo4.lib.virginia.edu/ecs-tasks/production
+BASE_DIR=$TERRAFORM_ASSETS/virgo4.lib.virginia.edu/ecs-tasks/production
 
 for service in citations-ws         \
                digital-content-ws   \
