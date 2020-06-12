@@ -59,7 +59,7 @@ exit_on_error $? "Extract from source failed with error $?"
 
 # data rewrite phase
 echo "Rewriting as necessary..."
-cat $DUMP_FILE | sed -e 's/.private.production/-test.private.production/g' | sed -e 's/.internal.lib.virginia.edu/-test.internal.lib.virginia.edu/g' > $REWRITE_FILE
+cat $DUMP_FILE | sed -e 's/.private.production/-test.private.test/g' | sed -e 's/.internal.lib.virginia.edu/-test.internal.lib.virginia.edu/g' > $REWRITE_FILE
 
 # restore the data
 echo "Restoring dataset..."
