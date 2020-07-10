@@ -52,6 +52,10 @@ else
    echo "Cannot locate $STAGING_DIR tag"
 fi
 
+if [ -n "$PRODUCTION_TAG" -a -n "$STAGING_TAG" -a "$PRODUCTION_TAG" == "$STAGING_TAG" ]; then
+   echo "Same, YAY!!"
+fi
+
 exit 0
 
 #
