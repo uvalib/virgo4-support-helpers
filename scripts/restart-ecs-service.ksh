@@ -52,7 +52,7 @@ res=$?
 exit_on_error $res "ERROR restarting $SEERVICE_NAME, aborting"
 
 # all over
-echo "Terminating normally"
+echo "OK"
 exit 0
 
 #
