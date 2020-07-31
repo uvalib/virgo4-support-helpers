@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# A helper to get the list of running ecs services
+# A helper to restart a running ecs service
 #
 
 #set -x
@@ -11,7 +11,7 @@ SCRIPT_DIR=$(dirname $FULL_NAME)
 . $SCRIPT_DIR/common.ksh
 
 function show_use_and_exit {
-   error_and_exit "use: $(basename $0) <service name> <staging|production>"
+   error_and_exit "use: $(basename $0) <service name> <staging|test|production>"
 }
 
 # ensure correct usage
@@ -27,9 +27,9 @@ shift
 
 # validate the environment parameter
 case $ENVIRONMENT in
-   staging|production)
+   staging|test|production)
       ;;
-   *) echo "ERROR: specify staging or production, aborting"
+   *) echo "ERROR: specify staging, test or production, aborting"
    exit 1
    ;;
 esac
@@ -49,7 +49,7 @@ SERVICE_PREFIX=arn:aws:ecs:us-east-1:115119339709:service
 # get the list of running services
 $AWS_TOOL ecs update-service --force-new-deployment --cluster $CLUSTER_NAME --service $SERVICE_NAME > /dev/null
 res=$?
-exit_on_error $res "ERROR restarting $SEERVICE_NAME, aborting"
+exit_on_error $res "ERROR restarting $SERVICE_NAME, aborting"
 
 # all over
 echo "OK"

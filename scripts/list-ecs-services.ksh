@@ -11,7 +11,7 @@ SCRIPT_DIR=$(dirname $FULL_NAME)
 . $SCRIPT_DIR/common.ksh
 
 function show_use_and_exit {
-   error_and_exit "use: $(basename $0) <staging|production>"
+   error_and_exit "use: $(basename $0) <staging|test|production>"
 }
 
 # ensure correct usage
@@ -25,9 +25,9 @@ shift
 
 # validate the environment parameter
 case $ENVIRONMENT in
-   staging|production)
+   staging|test|production)
       ;;
-   *) echo "ERROR: specify staging or production, aborting"
+   *) echo "ERROR: specify staging, test or production, aborting"
    exit 1
    ;;
 esac
