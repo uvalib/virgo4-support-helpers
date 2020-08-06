@@ -19,7 +19,7 @@ if [ ! -f $INPUT_FILE ]; then
 fi
 
 # tool definition
-TOOL=../virgo4-file-notify/bin/virgo4-file-notify.darwin
+TOOL=bin/virgo4-file-notify
 if [ ! -x $TOOL ]; then
    echo "ERROR: $TOOL is not available, aborting"
    exit 1
