@@ -1,3 +1,4 @@
 tmp
 bin/virgo4-file-notify
+bin/virgo4-cache-verify
 env.*
