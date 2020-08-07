@@ -129,7 +129,14 @@ exit_on_error $? "ERROR: $? querying Solr, aborting"
 # filter the results
 cat $SOLR_RESULTS_FILE | grep "\"id\":" | awk -F: '{print $2}' | tr -d "\",}]" | sort > $ID_TARGET
 COUNT=$(wc -l $ID_TARGET | awk '{print $1}')
-echo "$COUNT id's received from Solr query..."
+
+# check we actually have items to process
+if [ "$COUNT" != "0" ]; then
+   echo "$COUNT id's received from Solr query..."
+else
+   echo "No items received from Solr, aborting"
+   exit 1
+fi
 
 # do the cache verification if appropriate
 if [ -n "$DATABASE_ENV" ]; then
