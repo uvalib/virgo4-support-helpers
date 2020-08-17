@@ -1,1 +1,1 @@
-rows=10000000&fq=data_source_f%3Ahathitrust
+rows=10000000&fq=data_source_f:hathitrust
