@@ -44,9 +44,8 @@ ensure_tool_available $AWS_TOOL
 # related definitions
 CLUSTER_NAME=uva-ecs-cluster-${ENVIRONMENT}
 SERVICE_NAME=${SERVICE}-${ENVIRONMENT}
-SERVICE_PREFIX=arn:aws:ecs:us-east-1:115119339709:service
 
-# get the list of running services
+# force a new deployment of the service
 $AWS_TOOL ecs update-service --force-new-deployment --cluster $CLUSTER_NAME --service $SERVICE_NAME > /dev/null
 res=$?
 exit_on_error $res "ERROR restarting $SERVICE_NAME, aborting"
