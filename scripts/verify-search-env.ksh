@@ -105,6 +105,7 @@ for service in citations-ws         \
         ENDPOINT=https://${service}${TEST_EXTRA}.internal.lib.virginia.edu
         ;;
 
+     # no public endpoint for the ils-connector
      #ils-connector-ws)
      #   TAG=$ILS_CONNECTOR_WS_TAG
      #   ENDPOINT=https://${service}${TEST_EXTRA}.internal.lib.virginia.edu
@@ -130,9 +131,27 @@ for service in citations-ws         \
         ENDPOINT=https://${service}${TEST_EXTRA}.internal.lib.virginia.edu
         ;;
 
-     #pool-solr-ws)
-     #   TAG=$POOL_SOLR_WS_TAG
-     #   ;;
+     pool-solr-ws)
+        TAG=$POOL_SOLR_WS_TAG
+        for pool in archival \
+                    catalog \
+                    hathitrust \
+                    images     \
+                    maps       \
+                    music-recordings \
+                    musical-scores   \
+                    serials          \
+                    sound-recordings \
+                    thesis           \
+                    uva-library      \
+                    video; do
+           ENDPOINT=https://${service}-${pool}${TEST_EXTRA}.internal.lib.virginia.edu
+           $WAIT_TOOL $ENDPOINT $TAG 300
+           res=$?
+           exit_on_error $res "Failed to get correct version for $service-${pool}"
+        done
+        continue
+        ;;
 
      search-ws)
         TAG=$SEARCH_WS_TAG
@@ -146,7 +165,7 @@ for service in citations-ws         \
 
      virgo4-client)
         TAG=$CLIENT_WS_TAG
-        ENDPOINT=https://${service}${TEST_EXTRA}.internal.lib.virginia.edu
+        ENDPOINT=https://v4${TEST_EXTRA}.lib.virginia.edu
         ;;
 
    esac
