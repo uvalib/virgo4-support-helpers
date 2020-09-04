@@ -49,7 +49,7 @@ SERVICE_NAME=${SERVICE}-${ENVIRONMENT}
 
 $AWS_TOOL ecs update-service --cluster $CLUSTER_NAME --service $SERVICE_NAME --desired-count $COUNT > /dev/null
 res=$?
-exit_on_error $res "ERROR scaling $SERVICE_NAME, aborting"
+exit_on_error $res "ERROR scaling $SERVICE_NAME"
 
 # all over
 echo "OK"
