@@ -41,6 +41,9 @@ ensure_dir_exists $TAG_DIRECTORY/tags
 WAIT_TOOL=$TAG_DIRECTORY/pipeline/wait_for_version.sh
 
 # get our version tags
+AVAILABILITY_WS_TAG=$(cat $TAG_DIRECTORY/tags/availability-ws.tag)
+ensure_var_defined "$AVAILABILITY_WS_TAG" "AVAILABILITY_WS_TAG"
+
 CITATIONS_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-citations-ws.tag)
 ensure_var_defined "$CITATIONS_WS_TAG" "CITATIONS_WS_TAG"
 
@@ -80,7 +83,8 @@ if [ $ENVIRONMENT == "test" ]; then
    TEST_EXTRA="-test"
 fi
 
-for service in citations-ws         \
+for service in availability-ws      \
+               citations-ws         \
                digital-content-ws   \
                ils-connector-ws     \
                pda-ws               \
@@ -94,6 +98,11 @@ for service in citations-ws         \
 
    # ensure we use the correct tag file
    case $service in
+
+     availability-ws)
+        TAG=$AVAILABILITY_WS_TAG
+        ENDPOINT=https://${service}${TEST_EXTRA}.internal.lib.virginia.edu
+        ;;
 
      citations-ws)
         TAG=$CITATIONS_WS_TAG

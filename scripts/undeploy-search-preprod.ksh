@@ -50,7 +50,8 @@ fi
 # define the location of the terraform assets for the service
 BASE_DIR=$(realpath $TERRAFORM_ASSETS)/virgo4.lib.virginia.edu/ecs-tasks/production
 
-for service in citations-ws         \
+for service in availability-ws      \
+               citations-ws         \
                digital-content-ws   \
                ils-connector-ws     \
                pda-ws               \
