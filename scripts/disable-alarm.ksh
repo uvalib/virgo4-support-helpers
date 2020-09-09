@@ -30,7 +30,7 @@ check_aws_environment
 AWS_TOOL=aws
 ensure_tool_available $AWS_TOOL
 
-$AWS_TOOL cloudwatch disable-alarm-actions --alarm-names $ALARM_NAME
+$AWS_TOOL cloudwatch disable-alarm-actions --alarm-names $ALARM_NAME --region $AWS_DEFAULT_REGION
 res=$?
 exit_on_error $res "ERROR disabling $ALARM_NAME"
 
