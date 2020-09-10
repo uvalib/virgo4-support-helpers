@@ -47,7 +47,7 @@ ensure_tool_available $AWS_TOOL
 CLUSTER_NAME=uva-ecs-cluster-${ENVIRONMENT}
 SERVICE_NAME=${SERVICE}-${ENVIRONMENT}
 
-$AWS_TOOL ecs update-service --cluster $CLUSTER_NAME --service $SERVICE_NAME --desired-count $COUNT > /dev/null
+$AWS_TOOL ecs update-service --cluster $CLUSTER_NAME --service $SERVICE_NAME --desired-count $COUNT --region $AWS_DEFAULT_REGION > /dev/null
 res=$?
 exit_on_error $res "ERROR scaling $SERVICE_NAME"
 

@@ -46,7 +46,7 @@ CLUSTER_NAME=uva-ecs-cluster-${ENVIRONMENT}
 SERVICE_NAME=${SERVICE}-${ENVIRONMENT}
 
 # force a new deployment of the service
-$AWS_TOOL ecs update-service --force-new-deployment --cluster $CLUSTER_NAME --service $SERVICE_NAME > /dev/null
+$AWS_TOOL ecs update-service --force-new-deployment --cluster $CLUSTER_NAME --service $SERVICE_NAME --region $AWS_DEFAULT_REGION > /dev/null
 res=$?
 exit_on_error $res "ERROR restarting $SERVICE_NAME, aborting"
 

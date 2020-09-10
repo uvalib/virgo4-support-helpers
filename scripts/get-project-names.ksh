@@ -18,7 +18,7 @@ AWS_TOOL=aws
 ensure_tool_available $AWS_TOOL
 
 # get the list of projects
-$AWS_TOOL ecr describe-repositories | grep "repositoryName" | awk -F\" '{printf " %s\n", $4}' | sort
+$AWS_TOOL ecr describe-repositories --region $AWS_DEFAULT_REGION | grep "repositoryName" | awk -F\" '{printf " %s\n", $4}' | sort
 exit_on_error $? "Error getting project names"
 
 echo "Terminating normally"

@@ -38,7 +38,7 @@ JQ_TOOL=jq
 ensure_tool_available $JQ_TOOL
 
 # get the details
-$AWS_TOOL ecr describe-images --repository-name $PROJECT_NAME | $JQ_TOOL ".imageDetails[].imageTags" | sed -e 's/]$//g' | sed -e 's/\[/=====/g' | tr -d "\"," > $TMPFILE1
+$AWS_TOOL ecr describe-images --repository-name $PROJECT_NAME --region $AWS_DEFAULT_REGION | $JQ_TOOL ".imageDetails[].imageTags" | sed -e 's/]$//g' | sed -e 's/\[/=====/g' | tr -d "\"," > $TMPFILE1
 exit_on_error $? "Error getting details for $PROJECT_NAME"
 
 TAG=""

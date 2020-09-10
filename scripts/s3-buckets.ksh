@@ -19,7 +19,7 @@ JQ_TOOL=jq
 ensure_tool_available $JQ_TOOL
 
 # get the list of running services
-$AWS_TOOL s3api list-buckets | $JQ_TOOL .Buckets[] | grep Name | tr -d "\"," | sort | awk '{printf " => %s\n", $2 }'
+$AWS_TOOL s3api list-buckets --region $AWS_DEFAULT_REGION | $JQ_TOOL .Buckets[] | grep Name | tr -d "\"," | sort | awk '{printf " => %s\n", $2 }'
 
 # all over
 echo "Terminating normally"

@@ -46,7 +46,7 @@ CLUSTER_NAME=uva-ecs-cluster-${ENVIRONMENT}
 SERVICE_PREFIX=arn:aws:ecs:us-east-1:115119339709:service
 
 # get the list of running services
-$AWS_TOOL ecs list-services --cluster $CLUSTER_NAME | $JQ_TOOL .serviceArns[] | tr -d "\"" | sed -e "s&$SERVICE_PREFIX/$CLUSTER_NAME/&&" | sort | awk '{printf " => %s\n", $1 }'
+$AWS_TOOL ecs list-services --cluster $CLUSTER_NAME --region $AWS_DEFAULT_REGION | $JQ_TOOL .serviceArns[] | tr -d "\"" | sed -e "s&$SERVICE_PREFIX/$CLUSTER_NAME/&&" | sort | awk '{printf " => %s\n", $1 }'
 
 # all over
 echo "Terminating normally"

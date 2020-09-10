@@ -45,7 +45,7 @@ ensure_tool_available $AWS_TOOL
 CLUSTER_NAME=uva-ecs-cluster-${ENVIRONMENT}
 SERVICE_NAME=${SERVICE}-${ENVIRONMENT}
 
-$AWS_TOOL ecs delete-service --cluster $CLUSTER_NAME --service $SERVICE_NAME --force > /dev/null
+$AWS_TOOL ecs delete-service --cluster $CLUSTER_NAME --service $SERVICE_NAME --force --region $AWS_DEFAULT_REGION > /dev/null
 res=$?
 exit_on_error $res "ERROR stopping $SERVICE_NAME, aborting"
 
