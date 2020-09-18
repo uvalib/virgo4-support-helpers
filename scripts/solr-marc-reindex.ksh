@@ -157,7 +157,7 @@ if [ -n "$DATABASE_ENV" ]; then
    rm -f $CACHE_RESULTS > /dev/null 2>&1
 
    $CACHE_VERIFY_TOOL > $CACHE_RESULTS 2>&1
-   exit_on_error $? "ERROR: $? verifying cache, aborting (errors in $CACHE_RESULTS)"
+   exit_on_error $? "ERROR: $? verifying cache, aborting (errors: $CACHE_RESULTS, ID list: $ID_TARGET)"
    rm -f $CACHE_RESULTS > /dev/null 2>&1
 
    echo "All items appear in the cache..."
