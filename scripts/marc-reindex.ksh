@@ -6,8 +6,9 @@
 #set -x
 
 # source common helpers
-FULL_NAME=$(realpath $0)
-SCRIPT_DIR=$(dirname $FULL_NAME)
+#FULL_NAME=$(realpath $0)
+SCRIPT_DIR=$( (cd -P $(dirname $0) && pwd) )
+#SCRIPT_DIR=$(dirname $FULL_NAME)
 . $SCRIPT_DIR/common.ksh
 
 function show_use_and_exit {
