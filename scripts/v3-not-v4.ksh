@@ -96,14 +96,16 @@ cat $V3_DATA_FILE | jq ".id" | tr -d "\"" | sort > $V3_ID_FILE
 
 # create a list of what is missing from V4
 comm -23 $V3_ID_FILE $V4_ID_FILE > $MISSING_ID_FILE
+COUNT=$(wc -l $MISSING_ID_FILE | awk '{print $1}')
+echo "$COUNT id's missing from V4..."
 
 # dump the data for every item that is missing
 echo "Generating list of missing items (this takes a very long time)..."
-grep -F -x -v -f $MISSING_ID_FILE $V3_DATA_FILE > $RESULTS_FILE
+grep -F -f $MISSING_ID_FILE $V3_DATA_FILE > $RESULTS_FILE
 echo "Results in $RESULTS_FILE"
 
 # cleanup
-rm -fr $V3_SOLR_RESULTS_FILE $V4-SOLR_RESULTS_FILE $V3_DATA_FILE $V3_ID_FILE $V4_ID_FILE $MISSING_ID_FILE > /dev/null 2>&1
+rm -fr $V3_SOLR_RESULTS_FILE $V4_SOLR_RESULTS_FILE $V3_DATA_FILE $V3_ID_FILE $V4_ID_FILE $MISSING_ID_FILE > /dev/null 2>&1
 
 # success
 echo "Terminating normally"
