@@ -60,7 +60,7 @@ rm -f $MISSING_ID_FILE > /dev/null 2>&1
 rm -f $RESULTS_FILE > /dev/null 2>&1
 
 echo "Getting items from V3 Solr (this takes a while)..."
-SOLR_QUERY="$V3_SOLR/solr/core/select?q=-source_facet:%22Library%20Catalog%22%20-source_facet:%22Hathi%20Trust%20Digital%20Library%22&wt=json&fl=id,%20source_facet,%20digital_collection_facet&rows=$MAX_ITEMS&start=0"
+SOLR_QUERY="$V3_SOLR/solr/core/select?q=-source_facet%3A%22Library%20Catalog%22%20-source_facet%3A%22Hathi%20Trust%20Digital%20Library%22%20-shadowed_location_facet%3AHIDDEN&wt=json&fl=id,%20source_facet,%20digital_collection_facet&rows=$MAX_ITEMS&start=0"
 echo " ($SOLR_QUERY)"
 curl $SOLR_QUERY > $V3_SOLR_RESULTS_FILE 2>/dev/null
 exit_on_error $? "ERROR: $? querying V3 Solr, aborting"
