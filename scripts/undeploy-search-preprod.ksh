@@ -60,6 +60,7 @@ for service in availability-ws      \
                pool-solr-ws         \
                pool-worldcat-ws     \
                search-ws            \
+               shelf-browse-ws      \
                suggestor-ws         \
                virgo4-client; do
 
