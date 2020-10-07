@@ -82,6 +82,9 @@ ensure_var_defined "$POOL_SOLR_WS_TAG" "POOL_SOLR_WS_TAG"
 SEARCH_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-search-ws.tag)
 ensure_var_defined "$SEARCH_WS_TAG" "SEARCH_WS_TAG"
 
+SHELF_BROWSE_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-shelf-browse-ws.tag)
+ensure_var_defined "$SHELF_BROWSE_WS_TAG" "SHELF_BROWSE_WS_TAG"
+
 SUGGESTOR_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-suggestor-ws.tag)
 ensure_var_defined "$SUGGESTOR_WS_TAG" "SUGGESTOR_WS_TAG"
 
@@ -105,6 +108,7 @@ for service in availability-ws      \
                pool-solr-ws         \
                pool-worldcat-ws     \
                search-ws            \
+               shelf-browse-ws      \
                suggestor-ws         \
                virgo4-client; do
 
@@ -151,6 +155,10 @@ for service in availability-ws      \
         TAG=$SEARCH_WS_TAG
         ;;
 
+     shelf-browse-ws)
+        TAG=$SHELF_BROWSE_WS_TAG
+        ;;
+
      suggestor-ws)
         TAG=$SUGGESTOR_WS_TAG
         ;;
@@ -168,7 +176,7 @@ for service in availability-ws      \
       cd $BASE_DIR/$service
       exit_on_error $? "$service asset directory missing"
 
-      $TERRAFORM_TOOL init
+      $TERRAFORM_TOOL init --upgrade
       exit_on_error $? "$service init failed"
 
       $TERRAFORM_TOOL workspace select test
