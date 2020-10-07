@@ -5,21 +5,24 @@ require 'json'
 require 'csv'
 require 'toml'
 
-$file_dir="/directory-to-files/"
+$fields_path=ARGV[0]
+$pools_path=ARGV[1]
+$active_toml_path=ARGV[2]
+
 # Read in field.json file
-file=File.read($file_dir+"fields.json")
+file=File.read($fields_path+"fields.json")
 fields=JSON.parse(file)['global']['mappings']['definitions']['fields']
 
 # Read in pool json file
 def pool(pool_name)
-  pool_file=File.read($file_dir+pool_name+".json")
+  pool_file=File.read($pools_path+pool_name+".json")
   JSON.parse(pool_file)["local"]["mappings"]["configured"]["field_names"]["detailed"]
 end
 
-toml_hash = TOML.load_file($file_dir+"active.en.toml")
+toml_hash = TOML.load_file($active_toml_path+"active.en.toml")
 #puts toml_hash['FieldAbbreviatedTitle']['other']
 
-CSV.open($file_dir+"V4-fields.csv","w",
+CSV.open("V4-fields.csv","w",
     :write_headers => true,
     :headers => ["Field", "Label", "solr field", "archival", "catalog","hathitrust", "images", "maps", "music-recordings", "music-scores", "serials", "sound-recordings", "thesis", "uva-library", "video"]
 ) do |csv|
