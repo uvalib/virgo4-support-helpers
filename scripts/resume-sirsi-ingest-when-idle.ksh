@@ -27,8 +27,9 @@ case $ENVIRONMENT in
    ;;
 esac
 
+# disabled because we sometimes operate using roles
 # check our environment requirements
-check_aws_environment
+# check_aws_environment
 
 # check the scripts we need
 QUEUE_COUNT=$SCRIPT_DIR/sqs-queue-count.ksh

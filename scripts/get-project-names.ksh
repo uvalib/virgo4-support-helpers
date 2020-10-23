@@ -10,8 +10,9 @@ FULL_NAME=$(realpath $0)
 SCRIPT_DIR=$(dirname $FULL_NAME)
 . $SCRIPT_DIR/common.ksh
 
+# disabled because we sometimes operate using roles
 # check our environment requirements
-check_aws_environment
+# check_aws_environment
 
 # ensure we have the necessary tools available
 AWS_TOOL=aws

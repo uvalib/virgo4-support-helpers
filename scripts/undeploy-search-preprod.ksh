@@ -33,8 +33,9 @@ if [ -n "$LIVE_RUN" ]; then
    fi
 fi
 
+# disabled because we sometimes operate using roles
 # check our environment requirements
-check_aws_environment
+# check_aws_environment
 
 # ensure we have the necessary tools available
 TERRAFORM_TOOL=terraform

@@ -23,8 +23,9 @@ fi
 RULE_NAME=$1
 shift
 
+# disabled because we sometimes operate using roles
 # check our environment requirements
-check_aws_environment
+# check_aws_environment
 
 # ensure we have the necessary tools available
 AWS_TOOL=aws

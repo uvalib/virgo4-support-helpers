@@ -28,8 +28,9 @@ TMPFILE2=/tmp/builds2.$$
 rm -fr $TMPFILE1 > /dev/null 2>&1
 rm -fr $TMPFILE2 > /dev/null 2>&1
 
+# disabled because we sometimes operate using roles
 # check our environment requirements
-check_aws_environment
+# check_aws_environment
 
 # ensure we have the necessary tools available
 AWS_TOOL=aws

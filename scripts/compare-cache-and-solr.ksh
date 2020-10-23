@@ -52,8 +52,9 @@ case $ENVIRONMENT in
    ;;
 esac
 
+# disabled because we sometimes operate using roles
 # check our environment requirements
-check_aws_environment
+# check_aws_environment
 
 # ensure our Solr query file exist
 ensure_file_exists $SOLR_QUERY

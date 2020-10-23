@@ -58,8 +58,9 @@ if [ -n "$DATABASE_ENV" ]; then
    ensure_file_exists $CACHE_VERIFY_TOOL
 fi
 
+# disabled because we sometimes operate using roles
 # check our environment requirements
-check_aws_environment
+# check_aws_environment
 
 # ensure our Solr query file exists
 ensure_file_exists $ID_FILE

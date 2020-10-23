@@ -27,8 +27,9 @@ case $ENVIRONMENT in
    ;;
 esac
 
+# disabled because we sometimes operate using roles
 # check our environment requirements
-check_aws_environment
+# check_aws_environment
 
 # check the scripts we need
 DISABLE_AUTOSCALE=$SCRIPT_DIR/disable-ecs-autoscale.ksh
