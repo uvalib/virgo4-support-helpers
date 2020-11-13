@@ -50,9 +50,6 @@ ensure_var_defined "$CITATIONS_WS_TAG" "CITATIONS_WS_TAG"
 CLIENT_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-client.tag)
 ensure_var_defined "$CLIENT_WS_TAG" "CLIENT_WS_TAG"
 
-DIGITAL_CONTENT_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-digital-content-ws.tag)
-ensure_var_defined "$DIGITAL_CONTENT_WS_TAG" "DIGITAL_CONTENT_WS_TAG"
-
 ILS_CONNECTOR_WS_TAG=$(cat $TAG_DIRECTORY/tags/ils-connector.tag)
 ensure_var_defined "$ILS_CONNECTOR_WS_TAG" "ILS_CONNECTOR_WS_TAG"
 
@@ -88,7 +85,6 @@ fi
 
 for service in availability-ws      \
                citations-ws         \
-               digital-content-ws   \
                ils-connector-ws     \
                pda-ws               \
                pool-eds-ws          \
@@ -110,11 +106,6 @@ for service in availability-ws      \
 
      citations-ws)
         TAG=$CITATIONS_WS_TAG
-        ENDPOINT=https://${service}${TEST_EXTRA}.internal.lib.virginia.edu
-        ;;
-
-     digital-content-ws)
-        TAG=$DIGITAL_CONTENT_WS_TAG
         ENDPOINT=https://${service}${TEST_EXTRA}.internal.lib.virginia.edu
         ;;
 

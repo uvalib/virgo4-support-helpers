@@ -59,9 +59,6 @@ ensure_var_defined "$CITATIONS_WS_TAG" "CITATIONS_WS_TAG"
 CLIENT_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-client.tag)
 ensure_var_defined "$CLIENT_WS_TAG" "CLIENT_WS_TAG"
 
-DIGITAL_CONTENT_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-digital-content-ws.tag)
-ensure_var_defined "$DIGITAL_CONTENT_WS_TAG" "DIGITAL_CONTENT_WS_TAG"
-
 ILS_CONNECTOR_WS_TAG=$(cat $TAG_DIRECTORY/tags/ils-connector.tag)
 ensure_var_defined "$ILS_CONNECTOR_WS_TAG" "ILS_CONNECTOR_WS_TAG"
 
@@ -101,7 +98,6 @@ BASE_DIR=$TERRAFORM_ASSETS/virgo4.lib.virginia.edu/ecs-tasks/production
 
 for service in availability-ws      \
                citations-ws         \
-               digital-content-ws   \
                ils-connector-ws     \
                pda-ws               \
                pool-eds-ws          \
@@ -122,10 +118,6 @@ for service in availability-ws      \
 
      citations-ws)
         TAG=$CITATIONS_WS_TAG
-        ;;
-
-     digital-content-ws)
-        TAG=$DIGITAL_CONTENT_WS_TAG
         ;;
 
      ils-connector-ws)
