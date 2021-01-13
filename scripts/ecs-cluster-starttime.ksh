@@ -11,23 +11,34 @@ SCRIPT_DIR=$(dirname $FULL_NAME)
 . $SCRIPT_DIR/common.ksh
 
 function show_use_and_exit {
-   error_and_exit "use: $(basename $0) <staging|test|production>"
+   error_and_exit "use: $(basename $0) <uva|lic> <staging|test|production|global>"
 }
 
 # ensure correct usage
-if [ $# -lt 1 ]; then
+if [ $# -lt 2 ]; then
    show_use_and_exit
 fi
 
 # input parameters for clarity
+CLUSTER=$1
+shift
 ENVIRONMENT=$1
 shift
 
+# validate the cluster parameter
+case $CLUSTER in
+   uva|lic)
+      ;;
+   *) echo "ERROR: specify uva or lic, aborting"
+   exit 1
+   ;;
+esac
+
 # validate the environment parameter
 case $ENVIRONMENT in
-   staging|test|production)
+   staging|test|production|global)
       ;;
-   *) echo "ERROR: specify staging, test or production, aborting"
+   *) echo "ERROR: specify staging, test, production or global, aborting"
    exit 1
    ;;
 esac
@@ -43,7 +54,7 @@ GET_START=$SCRIPT_DIR/ecs-service-starttime.ksh
 ensure_tool_available $GET_START
 
 # related definitions
-CLUSTER_NAME=uva-ecs-cluster-${ENVIRONMENT}
+CLUSTER_NAME=${CLUSTER}-ecs-cluster-${ENVIRONMENT}
 
 # temp file
 services=/tmp/services.$$
@@ -51,7 +62,7 @@ times=/tmp/times.$$
 
 # get a list of services
 echo "Getting running services..."
-$SERVICE_LIST $ENVIRONMENT | grep "=>" | awk '{print $2}' | sed -e "s/-$ENVIRONMENT//g" > $services
+$SERVICE_LIST $CLUSTER $ENVIRONMENT | grep "=>" | awk '{print $2}' | sed -e "s/-$ENVIRONMENT//g" > $services
 echo "Getting service start times..."
 for s in $(<$services); do
    echo $s
