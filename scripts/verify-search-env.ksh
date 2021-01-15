@@ -137,18 +137,9 @@ for service in availability-ws      \
 
      pool-solr-ws)
         TAG=$POOL_SOLR_WS_TAG
-        for pool in archival \
-                    catalog \
-                    hathitrust \
+        for pool in hathitrust \
                     images     \
-                    maps       \
-                    music-recordings \
-                    musical-scores   \
-                    serials          \
-                    sound-recordings \
-                    thesis           \
-                    uva-library      \
-                    video; do
+                    uva-library; do
            ENDPOINT=https://${service}-${pool}${TEST_EXTRA}.internal.lib.virginia.edu
            $WAIT_TOOL $ENDPOINT $TAG 300
            res=$?
