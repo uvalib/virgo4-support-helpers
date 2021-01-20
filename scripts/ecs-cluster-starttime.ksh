@@ -53,25 +53,25 @@ ensure_tool_available $SERVICE_LIST
 GET_START=$SCRIPT_DIR/ecs-service-starttime.ksh
 ensure_tool_available $GET_START
 
-# related definitions
-CLUSTER_NAME=${CLUSTER}-ecs-cluster-${ENVIRONMENT}
-
 # temp file
 services=/tmp/services.$$
 times=/tmp/times.$$
 
 # get a list of services
 echo "Getting running services..."
-$SERVICE_LIST $CLUSTER $ENVIRONMENT | grep "=>" | awk '{print $2}' | sed -e "s/-$ENVIRONMENT//g" > $services
+$SERVICE_LIST $CLUSTER $ENVIRONMENT | grep " =>" | awk '{print $2}' | sed -e "s/-$ENVIRONMENT//g" > $services
+
 echo "Getting service start times..."
 for s in $(<$services); do
    echo $s
-   $GET_START $s $ENVIRONMENT | grep -v "OK"
+   $GET_START $CLUSTER $ENVIRONMENT $s| grep -v "OK"
 done > $times
 
+# filter for services that have multiple container instances running
 for line in $(<$times); do
 
-  if [[ $line =~ ^2020 ]]; then
+  REGEX="^202"
+  if [[ $line =~ $REGEX ]]; then
      printf "%s : %s\n" $line $SERVICE
   else
      SERVICE=$line
