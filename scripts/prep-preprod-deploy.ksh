@@ -28,17 +28,12 @@ ensure_file_exists $CLONER
 ensure_file_exists $MIGRATOR
 
 # first dump the necessary databases so we have a perminant copy
-TIMESTAMP=$(date "+%Y-%m-%d-%H%M%S")
-SEARCH_DUMP_NAME=$SEARCH_PROD_DEPLOY_DIRECTORY/db/$TIMESTAMP-virgo4.dump
-PDA_DUMP_NAME=$SEARCH_PROD_DEPLOY_DIRECTORY/db/$TIMESTAMP-virgo4_pda.dump
+SEARCH_DUMP_NAME=$SEARCH_PROD_DEPLOY_DIRECTORY/db/virgo4.dump
+PDA_DUMP_NAME=$SEARCH_PROD_DEPLOY_DIRECTORY/db/virgo4_pda.dump
 $DUMPER $SEARCH_PROD_ENV $SEARCH_DUMP_NAME
 exit_on_error $? "Search database dump failed"
 $DUMPER $PDA_PROD_ENV $PDA_DUMP_NAME
 exit_on_error $? "PDA database dump failed"
-gzip $SEARCH_DUMP_NAME
-exit_on_error $? "Search database dump compress failed"
-gzip $PDA_DUMP_NAME
-exit_on_error $? "PDA database dump compress failed"
 
 # first clone the necessary databases
 $CLONER $SEARCH_PROD_ENV $SEARCH_TEST_ENV
