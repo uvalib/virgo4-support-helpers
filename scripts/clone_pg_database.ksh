@@ -30,17 +30,10 @@ ensure_file_exists $SOURCE_ENV
 ensure_file_exists $TARGET_ENV
 
 # ensure the necessary tools exist
-DUMP_TOOL=pg_dump
-ensure_tool_available $DUMP_TOOL
-RESTORE_TOOL=psql
-ensure_tool_available $RESTORE_TOOL
-
-# extract the needed values from the source environment
-SRC_DBHOST=$(extract_nv_from_file $SOURCE_ENV DBHOST)
-SRC_DBPORT=$(extract_nv_from_file $SOURCE_ENV DBPORT)
-SRC_DBUSER=$(extract_nv_from_file $SOURCE_ENV DBUSER)
-SRC_DBPASSWD=$(extract_nv_from_file $SOURCE_ENV DBPASSWD)
-SRC_DBNAME=$(extract_nv_from_file $SOURCE_ENV DBNAME)
+DUMP_SCRIPT=$SCRIPT_DIR/dump_pg_database.ksh
+ensure_file_exists $DUMP_SCRIPT
+PSQL_TOOL=psql
+ensure_tool_available $PSQL_TOOL
 
 # extract the needed values from the target environment
 TGT_DBHOST=$(extract_nv_from_file $TARGET_ENV DBHOST)
@@ -53,17 +46,21 @@ DUMP_FILE=/tmp/dump.$$
 REWRITE_FILE=/tmp/rewrite.$$
 
 # dump the data
-echo "Dumping source dataset..."
-PGPASSWORD=$SRC_DBPASSWD $DUMP_TOOL -w --clean -h $SRC_DBHOST -p $SRC_DBPORT -U $SRC_DBUSER -d $SRC_DBNAME -f $DUMP_FILE
-exit_on_error $? "Extract from source failed with error $?"
+$DUMP_SCRIPT $SOURCE_ENV $DUMP_FILE
+exit_on_error $? "Terminating"
 
 # data rewrite phase
 echo "Rewriting as necessary..."
 cat $DUMP_FILE | sed -e 's/.private.production/-test.private.test/g' | sed -e 's/.internal.lib.virginia.edu/-test.internal.lib.virginia.edu/g' > $REWRITE_FILE
 
+# purge the existing database
+echo "Purging target database ($TGT_DBNAME @ $TGT_DBHOST)"
+PGPASSWORD=$TGT_DBPASSWD $PSQL_TOOL -h $TGT_DBHOST -p $TGT_DBPORT -U $TGT_DBUSER -d $TGT_DBNAME -t -c "DROP OWNED BY $TGT_DBUSER" > /dev/null
+exit_on_error $? "Purge of target failed with error $?"
+
 # restore the data
-echo "Restoring dataset..."
-PGPASSWORD=$TGT_DBPASSWD $RESTORE_TOOL -w -q -h $TGT_DBHOST -p $TGT_DBPORT -U $TGT_DBUSER -d $TGT_DBNAME -f $REWRITE_FILE > /dev/null
+echo "Restoring dataset ($TGT_DBNAME @ $TGT_DBHOST)"
+PGPASSWORD=$TGT_DBPASSWD $PSQL_TOOL -w -q -h $TGT_DBHOST -p $TGT_DBPORT -U $TGT_DBUSER -d $TGT_DBNAME -f $REWRITE_FILE > /dev/null
 exit_on_error $? "Restore to target failed with error $?"
 
 # remove the files

@@ -11,7 +11,7 @@ SCRIPT_DIR=$(dirname $FULL_NAME)
 . $SCRIPT_DIR/common.ksh
 
 function show_use_and_exit {
-   error_and_exit "use: $(basename $0) <pg source env> <pg target env>"
+   error_and_exit "use: $(basename $0) <pg source env> <target file>"
 }
 
 # ensure correct usage
@@ -40,9 +40,9 @@ SRC_DBPASSWD=$(extract_nv_from_file $SOURCE_ENV DBPASSWD)
 SRC_DBNAME=$(extract_nv_from_file $SOURCE_ENV DBNAME)
 
 # dump the data
-echo "Dumping source dataset..."
-PGPASSWORD=$SRC_DBPASSWD $DUMP_TOOL -w --clean -h $SRC_DBHOST -p $SRC_DBPORT -U $SRC_DBUSER -d $SRC_DBNAME -f $TARGET_FILE
-exit_on_error $? "Extract from source failed with error $?"
+echo "Dumping database ($SRC_DBNAME @ $SRC_DBHOST)"
+PGPASSWORD=$SRC_DBPASSWD $DUMP_TOOL -w -h $SRC_DBHOST -p $SRC_DBPORT -U $SRC_DBUSER -d $SRC_DBNAME -f $TARGET_FILE
+exit_on_error $? "Extract from database failed with error $?"
 
 # success
 echo "Terminating normally"
