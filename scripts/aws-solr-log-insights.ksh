@@ -48,7 +48,7 @@ START_EPOCH=$((START_EPOCH + 18000))
 END_EPOCH=$((END_EPOCH + 18000))
 
 # initiate the query
-QID=$($AWS_TOOL logs start-query --log-group-name $LOG_GROUP --start-time $START_EPOCH --end-time $END_EPOCH --query-string "$INSIGHTS_QUERY" | $JQ_TOOL ".queryId" | tr -d "\"")
+QID=$($AWS_TOOL logs start-query --log-group-name $LOG_GROUP --start-time $START_EPOCH --end-time $END_EPOCH --query-string "$INSIGHTS_QUERY" --limit 10000 | $JQ_TOOL ".queryId" | tr -d "\"")
 
 # check that we received a query id
 if [ -z "$QID" ]; then
