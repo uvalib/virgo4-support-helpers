@@ -32,6 +32,8 @@ ensure_dir_exists $TERRAFORM_ASSETS
 # ensure service list exists
 ensure_file_exists $SERVICE_LIST
 
+TEMPFILE=/tmp/tags.$$
+
 for service in $(<$SERVICE_LIST); do
 
    echo "**************************************************"
@@ -41,8 +43,12 @@ for service in $(<$SERVICE_LIST); do
    cd $TERRAFORM_ASSETS/$service
    exit_on_error $? "ERROR: $TERRAFORM_ASSETS/$service missing"
 
-   $COMPARE_VERSION_HELPER
-   #exit_on_error $? "ERROR: Running version helper"
+   $COMPARE_VERSION_HELPER > $TEMPFILE
+   if [ $? -eq 0 ]; then
+      echo " -- identical --"
+   else
+      cat $TEMPFILE
+   fi
 
 done
 
