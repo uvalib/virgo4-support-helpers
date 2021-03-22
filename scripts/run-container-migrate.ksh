@@ -80,10 +80,10 @@ if [ "$LIVE_RUN" == "y" ]; then
    DOCKER_ENTRY="--entrypoint /$APP_DIR/scripts/migrate.sh"
 
    # database environment
-   DOCKER_ENV="-tls -e DBHOST=$DBHOST -e DBPORT=$DBPORT -e DBNAME=$DBNAME -e DBUSER=$DBUSER -e DBPASS=$DBPASSWD"
+   DOCKER_ENV="-e DBHOST=$DBHOST -e DBPORT=$DBPORT -e DBNAME=$DBNAME -e DBUSER=$DBUSER -e DBPASS=$DBPASSWD"
 
    # run the migrate
-   $DOCKER_TOOL run $DOCKER_ENTRY $DOCKER_ENV $REGISTRY/$CONTAINER
+   $DOCKER_TOOL --tls run $DOCKER_ENTRY $DOCKER_ENV $REGISTRY/$CONTAINER
    res=$?
    if [ $res -ne 0 ]; then
       echo "Migrate process FAILED"
