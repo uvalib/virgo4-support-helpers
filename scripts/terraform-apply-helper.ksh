@@ -14,7 +14,7 @@ TERRAFORM_TOOL=terraform
 ensure_tool_available $TERRAFORM_TOOL
 
 # get the current deploy tag
-DEPLOY_TAG=$($TERRAFORM_TOOL output | grep deploy_tag | awk '{print $3}')
+DEPLOY_TAG=$($TERRAFORM_TOOL output | grep deploy_tag | awk '{print $3}' | tr -d "\"")
 
 if [ -n "$DEPLOY_TAG" ]; then
    echo "Using existing deploy tag: $DEPLOY_TAG"
