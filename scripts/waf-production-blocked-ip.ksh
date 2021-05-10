@@ -56,12 +56,19 @@ END_TIME=$(date -v+${UTC_END}H +"%Y-%m-%dT%H:%M:%SZ")
 ACL_ID=69ebf5a1-5eaf-496d-b919-e95ed07dc3ee
 
 # waf_regional_ip_rate_limit_rule_id (fixed)
-RULE_ID=3177c7b1-36e7-449e-b06a-6dccee78d12f
+RATE_LIMIT_RULE_ID=3177c7b1-36e7-449e-b06a-6dccee78d12f
+
+# IP block
+IP_BLOCK_RULE_ID=51cccbb1-9e9d-4ad8-b21d-203e1b70b360
 
 # maximum number of results
 MAX_RESULTS=500
 
-aws waf-regional get-sampled-requests --web-acl-id $ACL_ID --rule-id $RULE_ID --max-items $MAX_RESULTS --time-window StartTime=$START_TIME,EndTime=$END_TIME | jq ".SampledRequests[].Request.ClientIP" | tr -d "\"" | sort | uniq -c
+echo "IP rate limit:"
+aws waf-regional get-sampled-requests --web-acl-id $ACL_ID --rule-id $RATE_LIMIT_RULE_ID --max-items $MAX_RESULTS --time-window StartTime=$START_TIME,EndTime=$END_TIME | jq ".SampledRequests[].Request.ClientIP" | tr -d "\"" | sort | uniq -c
+
+echo "IP block:"
+aws waf-regional get-sampled-requests --web-acl-id $ACL_ID --rule-id $IP_BLOCK_RULE_ID --max-items $MAX_RESULTS --time-window StartTime=$START_TIME,EndTime=$END_TIME | jq ".SampledRequests[].Request.ClientIP" | tr -d "\"" | sort | uniq -c
 
 exit $?
 
