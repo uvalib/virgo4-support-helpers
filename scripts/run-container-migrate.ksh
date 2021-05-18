@@ -30,7 +30,7 @@ LIVE_RUN=$1
 ensure_file_exists $DATABASE_ENV
 
 # ensure our docker environment exists
-ensure_var_defined "$DOCKER_HOST" "DOCKER_HOST"
+#ensure_var_defined "$DOCKER_HOST" "DOCKER_HOST"
 
 # ensure our basic AWS definitions exists
 ensure_var_defined "$AWS_REGION" "AWS_REGION"
@@ -82,8 +82,12 @@ if [ "$LIVE_RUN" == "y" ]; then
    # database environment
    DOCKER_ENV="-e DBHOST=$DBHOST -e DBPORT=$DBPORT -e DBNAME=$DBNAME -e DBUSER=$DBUSER -e DBPASS=$DBPASSWD"
 
+   if [ -n "$DOCKER_HOST" -a "$DOCKER_HOST" != "localhost" ]; then
+      DOCKER_AUTH="--tls"
+   fi
+
    # run the migrate
-   $DOCKER_TOOL --tls run $DOCKER_ENTRY $DOCKER_ENV $REGISTRY/$CONTAINER
+   $DOCKER_TOOL $DOCKER_AUTH run $DOCKER_ENTRY $DOCKER_ENV $REGISTRY/$CONTAINER
    res=$?
    if [ $res -ne 0 ]; then
       echo "Migrate process FAILED"
