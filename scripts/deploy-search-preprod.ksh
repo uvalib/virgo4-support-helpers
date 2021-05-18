@@ -56,8 +56,8 @@ ensure_var_defined "$AVAILABILITY_WS_TAG" "AVAILABILITY_WS_TAG"
 CITATIONS_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-citations-ws.tag)
 ensure_var_defined "$CITATIONS_WS_TAG" "CITATIONS_WS_TAG"
 
-CIRCULATIONS_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-curculations-ws.tag)
-ensure_var_defined "$CIRCULATIONS_WS_TAG" "CIRCULATIONS_WS_TAG"
+COLLECTIONS_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-collections-ws.tag)
+ensure_var_defined "$COLLECTIONS_WS_TAG" "COLLECTIONS_WS_TAG"
 
 CLIENT_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-client.tag)
 ensure_var_defined "$CLIENT_WS_TAG" "CLIENT_WS_TAG"
@@ -101,7 +101,7 @@ BASE_DIR=$TERRAFORM_ASSETS/virgo4.lib.virginia.edu/ecs-tasks/production
 
 for service in availability-ws      \
                citations-ws         \
-               circulations-ws      \
+               collections-ws       \
                ils-connector-ws     \
                pda-ws               \
                pool-eds-ws          \
@@ -124,8 +124,8 @@ for service in availability-ws      \
         TAG=$CITATIONS_WS_TAG
         ;;
 
-     circulations-ws)
-        TAG=$CIRCULATIONS_WS_TAG
+     collections-ws)
+        TAG=$COLLECTIONS_WS_TAG
         ;;
 
      ils-connector-ws)
