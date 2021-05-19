@@ -1,5 +1,5 @@
 #
-# Helper to enable the inbound listener services. USE WITH CARE
+# Helper to enable ALL inbound listener services. USE WITH CARE
 #
 
 #set -x
@@ -28,7 +28,7 @@ if [ ! -d $TERRAFORM_REPO ]; then
 fi
 
 # prompt to be sure
-echo -n "Enabling inbound listeners in $ENVIRONMENT... ARE YOU SURE? [yes/no] "
+echo -n "Enabling ALL inbound listeners in $ENVIRONMENT... ARE YOU SURE? [yes/no] "
 read x
 if [ "$x" != "yes" ]; then
   echo "Aborted"

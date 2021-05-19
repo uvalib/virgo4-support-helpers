@@ -1,5 +1,5 @@
 #
-# Helper to disable ALL inbound listener services. USE WITH CARE
+# Helper to disable the SIRSI inbound listener services. USE WITH CARE
 #
 
 #set -x
@@ -28,7 +28,7 @@ if [ ! -d $TERRAFORM_REPO ]; then
 fi
 
 # prompt to be sure
-echo -n "Disabling ALL inbound listeners in $ENVIRONMENT... ARE YOU SURE? [yes/no] "
+echo -n "Disabling SIRSI inbound listeners in $ENVIRONMENT... ARE YOU SURE? [yes/no] "
 read x
 if [ "$x" != "yes" ]; then
   echo "Aborted"
@@ -39,13 +39,6 @@ CWD=$(pwd)
 
 # for each service
 for service in virgo4-default-doc-delete    \
-               virgo4-default-doc-ingest    \
-               virgo4-dynamic-marc-ingest   \
-               virgo4-hathi-cache-reprocess \
-               virgo4-hathi-marc-ingest     \
-               virgo4-image-doc-delete      \
-               virgo4-image-doc-ingest      \
-               virgo4-sirsi-cache-reprocess \
                virgo4-sirsi-marc-ingest; do
 
 
