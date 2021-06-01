@@ -52,6 +52,8 @@ esac
 # ensure we have the necessary tools available
 AWS_TOOL=aws
 ensure_tool_available $AWS_TOOL
+JQ_TOOL=jq
+ensure_tool_available $JQ_TOOL
 
 # related definitions
 CLUSTER_NAME=${CLUSTER}-ecs-cluster-${ENVIRONMENT}
@@ -61,7 +63,17 @@ else
   SERVICE_NAME=${SERVICE}
 fi
 
-$AWS_TOOL application-autoscaling register-scalable-target --service-namespace ecs --scalable-dimension ecs:service:DesiredCount --resource-id service/$CLUSTER_NAME/$SERVICE_NAME --suspended-state file://$SCRIPT_DIR/ecs-autoscale-disable.json --region $AWS_DEFAULT_REGION
+# get existing autoscale attributes
+TMPFILE=/tmp/autoscale.$$
+$AWS_TOOL application-autoscaling describe-scalable-targets --service-namespace ecs --resource-ids service/$CLUSTER_NAME/$SERVICE_NAME > $TMPFILE
+res=$?
+exit_on_error $res "ERROR getting autoscale attributes for $SERVICE_NAME, aborting"
+MIN_COUNT=$($JQ_TOOL ".ScalableTargets[0].MinCapacity" $TMPFILE)
+MAX_COUNT=$($JQ_TOOL ".ScalableTargets[0].MaxCapacity" $TMPFILE)
+rm $TMPFILE > /dev/null 2>&1
+
+# apply the autoscale rule
+$AWS_TOOL application-autoscaling register-scalable-target --service-namespace ecs --scalable-dimension ecs:service:DesiredCount --min-capacity $MIN_COUNT --max-capacity $MAX_COUNT --resource-id service/$CLUSTER_NAME/$SERVICE_NAME --suspended-state file://$SCRIPT_DIR/ecs-autoscale-disable.json --region $AWS_DEFAULT_REGION
 res=$?
 exit_on_error $res "ERROR disabling autoscale for $SERVICE_NAME, aborting"
 
