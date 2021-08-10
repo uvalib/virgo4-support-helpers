@@ -38,6 +38,7 @@ virgo4.lib.virginia.edu/ecs-tasks/staging/search-ws
 virgo4.lib.virginia.edu/ecs-tasks/staging/shelf-browse-ws
 virgo4.lib.virginia.edu/ecs-tasks/staging/suggestor-ws
 virgo4.lib.virginia.edu/ecs-tasks/staging/virgo4-client
+virgo4.lib.virginia.edu/ecs-tasks/staging/virgo4-client-lite
 virgo4.lib.virginia.edu/ecs-tasks/staging/virgo4-dashboard
 virgo4.lib.virginia.edu/ecs-tasks/staging/virgo4-default-doc-delete
 virgo4.lib.virginia.edu/ecs-tasks/staging/virgo4-default-doc-ingest

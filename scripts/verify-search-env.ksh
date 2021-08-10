@@ -47,8 +47,8 @@ ensure_var_defined "$AVAILABILITY_WS_TAG" "AVAILABILITY_WS_TAG"
 CITATIONS_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-citations-ws.tag)
 ensure_var_defined "$CITATIONS_WS_TAG" "CITATIONS_WS_TAG"
 
-CLIENT_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-client.tag)
-ensure_var_defined "$CLIENT_WS_TAG" "CLIENT_WS_TAG"
+CLIENT_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-client.tag)
+ensure_var_defined "$CLIENT_TAG" "CLIENT_TAG"
 
 ILS_CONNECTOR_WS_TAG=$(cat $TAG_DIRECTORY/tags/ils-connector.tag)
 ensure_var_defined "$ILS_CONNECTOR_WS_TAG" "ILS_CONNECTOR_WS_TAG"
@@ -164,7 +164,7 @@ for service in availability-ws      \
         ;;
 
      virgo4-client)
-        TAG=$CLIENT_WS_TAG
+        TAG=$CLIENT_TAG
         ENDPOINT=https://v4${TEST_EXTRA}.lib.virginia.edu
         ;;
 

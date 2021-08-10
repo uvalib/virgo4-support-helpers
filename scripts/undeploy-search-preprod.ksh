@@ -63,7 +63,8 @@ for service in availability-ws      \
                search-ws            \
                shelf-browse-ws      \
                suggestor-ws         \
-               virgo4-client; do
+               virgo4-client        \
+               virgo4-client-lite; do
 
    echo "Undeploy $service"
 
