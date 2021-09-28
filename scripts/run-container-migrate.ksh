@@ -72,7 +72,11 @@ if [ "$LIVE_RUN" == "y" ]; then
       APP_DIR=virgo4-pda
       ;;
 
-      *) error_and_exit "Cannot run migrate for this container; must be a client or pda container"
+      *collections*)
+      APP_DIR=virgo4-collections-ws
+      ;;
+
+      *) error_and_exit "Cannot run migrate for this container; must be a client, pda or collections container"
       ;;
 
    esac

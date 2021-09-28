@@ -11,11 +11,11 @@ SCRIPT_DIR=$(dirname $FULL_NAME)
 . $SCRIPT_DIR/common.ksh
 
 function show_use_and_exit {
-   error_and_exit "use: $(basename $0) <tag directory> <terraform directory> <search pg env> <pda pg env> [deploy=\"y\"]"
+   error_and_exit "use: $(basename $0) <tag directory> <terraform directory> <search pg env> <pda pg env> <collections pg env> [deploy=\"y\"]"
 }
 
 # ensure correct usage
-if [ $# -lt 4 ]; then
+if [ $# -lt 5 ]; then
    show_use_and_exit
 fi
 
@@ -28,7 +28,10 @@ SEARCH_DATABASE_ENV=$1
 shift
 PDA_DATABASE_ENV=$1
 shift
+COLLECTIONS_DATABASE_ENV=$1
+shift
 LIVE_RUN=$1
+shift
 
 # ensure the tag location exists
 ensure_dir_exists $TAG_DIRECTORY/tags
@@ -36,16 +39,22 @@ ensure_dir_exists $TAG_DIRECTORY/tags
 # ensure the terraform environment exists
 ensure_dir_exists $TERRAFORM_ASSETS/scripts
 
+# the migrate runner
+MIGRATE_RUNNER=./scripts/run-container-migrate.ksh
+ensure_file_exists $MIGRATE_RUNNER
+
 # get our version tags
 CLIENT_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-client.tag)
 ensure_var_defined "$CLIENT_TAG" "CLIENT_TAG"
-
 PDA_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-pda-ws.tag)
 ensure_var_defined "$PDA_WS_TAG" "PDA_WS_TAG"
+COLLECTIONS_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-collections-ws.tag)
+ensure_var_defined "$COLLECTIONS_WS_TAG" "COLLECTIONS_WS_TAG"
 
 # other definitions
 CLIENT_IMAGE=uvalib/virgo4-client
 PDA_WS_IMAGE=uvalib/virgo4-pda-ws
+COLLECTIONS_WS_IMAGE=uvalib/virgo4-collections-ws
 
 # if we are live running then authenticate with the ECR
 if [ "$LIVE_RUN" == "y" ]; then
@@ -59,28 +68,35 @@ if [ "$LIVE_RUN" == "y" ]; then
    fi
 fi
 
-# run the migrations
-RUNNER=./scripts/run-container-migrate.ksh
-
+# run the search client migrations
 IMAGE=$CLIENT_IMAGE:$CLIENT_TAG
-$RUNNER $IMAGE $SEARCH_DATABASE_ENV $LIVE_RUN
+$MIGRATE_RUNNER $IMAGE $SEARCH_DATABASE_ENV $LIVE_RUN
 res=$?
 if [ $res -ne 0 ]; then
-   echo "Migrate with $IMAGE FAILED"
+   echo "Client migrate with $IMAGE FAILED"
    exit $res
 fi
 
+# run the pda migrations
 IMAGE=$PDA_WS_IMAGE:$PDA_WS_TAG
-$RUNNER $IMAGE $PDA_DATABASE_ENV $LIVE_RUN
+$MIGRATE_RUNNER $IMAGE $PDA_DATABASE_ENV $LIVE_RUN
 res=$?
 if [ $res -ne 0 ]; then
-   echo "Migrate with $IMAGE FAILED"
+   echo "PDA migrate with $IMAGE FAILED"
    exit $res
 fi
 
-echo "Terminating normally"
+# run the collections migrations
+IMAGE=$COLLECTIONS_WS_IMAGE:$COLLECTIONS_WS_TAG
+$MIGRATE_RUNNER $IMAGE $COLLECTIONS_DATABASE_ENV $LIVE_RUN
+res=$?
+if [ $res -ne 0 ]; then
+   echo "Collections migrate with $IMAGE FAILED"
+   exit $res
+fi
 
 # all over
+echo "Terminating normally"
 exit 0
 
 #
