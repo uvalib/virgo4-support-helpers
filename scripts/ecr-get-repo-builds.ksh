@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# A helper to get the list of builds associated with a project
+# A helper to get the list of builds associated with an ECR repo
 #
 
 #set -x
@@ -11,7 +11,7 @@ SCRIPT_DIR=$(dirname $FULL_NAME)
 . $SCRIPT_DIR/common.ksh
 
 function show_use_and_exit {
-   error_and_exit "use: $(basename $0) <project name>"
+   error_and_exit "use: $(basename $0) <ECR repository name>"
 }
 
 # ensure correct usage
@@ -20,7 +20,7 @@ if [ $# -lt 1 ]; then
 fi
 
 # input parameters for clarity
-PROJECT_NAME=$1
+REPO_NAME=$1
 shift
 
 TMPFILE1=/tmp/builds1.$$
@@ -39,8 +39,8 @@ JQ_TOOL=jq
 ensure_tool_available $JQ_TOOL
 
 # get the details
-$AWS_TOOL ecr describe-images --repository-name $PROJECT_NAME --region $AWS_DEFAULT_REGION | $JQ_TOOL ".imageDetails[].imageTags" | sed -e 's/]$//g' | sed -e 's/\[/=====/g' | tr -d "\"," > $TMPFILE1
-exit_on_error $? "Error getting details for $PROJECT_NAME"
+$AWS_TOOL ecr describe-images --repository-name $REPO_NAME --region $AWS_DEFAULT_REGION | $JQ_TOOL ".imageDetails[].imageTags" | sed -e 's/]$//g' | sed -e 's/\[/=====/g' | tr -d "\"," > $TMPFILE1
+exit_on_error $? "Error getting details for $REPO_NAME"
 
 TAG=""
 BUILD=""
