@@ -1,5 +1,5 @@
 #
-# Helper script to list the contents of a specified bucket/path
+# Helper script to list the EFS filesystems for the account.
 #
 
 #set -x
