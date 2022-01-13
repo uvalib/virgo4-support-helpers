@@ -152,6 +152,7 @@ if [ -n "$DATABASE_ENV" ]; then
 
    # fixed
    export VIRGO4_CACHE_VERIFY_POSTGRES_TABLE=source_cache
+   export VIRGO4_CACHE_VERIFY_DATA_SOURCE=$MARC_TYPE
    export VIRGO4_CACHE_VERIFY_INFILE=$ID_TARGET
 
    CACHE_RESULTS=/tmp/cache-results.$$
