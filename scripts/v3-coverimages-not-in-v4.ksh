@@ -31,7 +31,7 @@ ensure_file_exists $V3_DATABASE_ENV
 ensure_file_exists $V4_DATABASE_ENV
 
 # tool for issuing Postgres queries
-QUERY_TOOL=scripts/mysql_query.ksh
+QUERY_TOOL=$SCRIPT_DIR/mysql_query.ksh
 ensure_file_exists $QUERY_TOOL
 
 # extract the needed values from the database environments

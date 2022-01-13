@@ -40,7 +40,7 @@ ensure_dir_exists $TAG_DIRECTORY/tags
 ensure_dir_exists $TERRAFORM_ASSETS/scripts
 
 # the migrate runner
-MIGRATE_RUNNER=./scripts/run-container-migrate.ksh
+MIGRATE_RUNNER=$SCRIPT_DIR/run-container-migrate.ksh
 ensure_file_exists $MIGRATE_RUNNER
 
 # get our version tags

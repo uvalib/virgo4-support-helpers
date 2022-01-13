@@ -86,7 +86,7 @@ fi
 ensure_file_exists $QUERY_FILE
 
 # ensure tool for uploading files to S3 exists
-S3_PUT_TOOL=scripts/s3-put.ksh
+S3_PUT_TOOL=$SCRIPT_DIR/s3-put.ksh
 ensure_file_exists $S3_PUT_TOOL
 
 # notifications of optional behavior

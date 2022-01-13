@@ -63,7 +63,7 @@ ensure_file_exists $SOLR_QUERY
 ensure_file_exists $DATABASE_ENV
 
 # tool for issuing Postgres queries
-QUERY_TOOL=scripts/pg_query.ksh
+QUERY_TOOL=$SCRIPT_DIR/pg_query.ksh
 ensure_file_exists $QUERY_TOOL
 
 # extract the needed values from the database environment

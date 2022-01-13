@@ -4,6 +4,10 @@
 
 #set -x
 
+# source common helpers
+SCRIPT_DIR=$( (cd -P $(dirname $0) && pwd) )
+. $SCRIPT_DIR/common.ksh
+
 # check command line use
 if [ $# -ne 2 ]; then
    echo "use: $(basename $0) <default|image> <staging|production>"
@@ -40,7 +44,7 @@ BUCKET=virgo4-ingest-$ENVIRONMENT-inbound
 YEAR=$(date "+%Y")
 
 # tool definition
-TOOL=scripts/s3-list.ksh
+TOOL=$SCRIPT_DIR/s3-list.ksh
 if [ ! -x $TOOL ]; then
    echo "ERROR: $TOOL is not available, aborting"
    exit 1

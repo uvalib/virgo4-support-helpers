@@ -52,15 +52,15 @@ esac
 ensure_file_exists $DATABASE_ENV
 
 # tool for issuing Postgres queries
-QUERY_TOOL=scripts/pg_query.ksh
+QUERY_TOOL=$SCRIPT_DIR/pg_query.ksh
 ensure_file_exists $QUERY_TOOL
 
 # tool for listing files in S3
-DYNAMIC_FILE_LIST=scripts/list-dynamic-files.ksh
+DYNAMIC_FILE_LIST=$SCRIPT_DIR/list-dynamic-files.ksh
 ensure_file_exists $DYNAMIC_FILE_LIST
 
 # tool for uploading files to S3
-S3_PUT_TOOL=scripts/s3-put.ksh
+S3_PUT_TOOL=$SCRIPT_DIR/s3-put.ksh
 ensure_file_exists $S3_PUT_TOOL
 
 # tool for sending S3 file notifications

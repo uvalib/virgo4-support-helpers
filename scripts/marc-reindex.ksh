@@ -64,11 +64,11 @@ esac
 ensure_file_exists $DATABASE_ENV
 
 # tool for issuing Postgres queries
-QUERY_TOOL=scripts/pg_query.ksh
+QUERY_TOOL=$SCRIPT_DIR/pg_query.ksh
 ensure_file_exists $QUERY_TOOL
 
 # tool for uploading files to S3
-S3_PUT_TOOL=scripts/s3-put.ksh
+S3_PUT_TOOL=$SCRIPT_DIR/s3-put.ksh
 ensure_file_exists $S3_PUT_TOOL
 
 # extract the needed values from the database environment

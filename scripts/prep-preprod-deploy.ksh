@@ -21,9 +21,9 @@ TERRAFORM_DIRECTORY=../terraform-infrastructure
 SEARCH_PROD_DEPLOY_DIRECTORY=../virgo4-search-production-deploy
 
 # our helpers
-DUMPER=scripts/dump_pg_database.ksh
-CLONER=scripts/clone_pg_database.ksh
-MIGRATOR=scripts/run-search-migrates.ksh
+DUMPER=$SCRIPT_DIR/dump_pg_database.ksh
+CLONER=$SCRIPT_DIR/clone_pg_database.ksh
+MIGRATOR=$SCRIPT_DIR/run-search-migrates.ksh
 
 # ensure our helpers exist
 ensure_file_exists $DUMPER
