@@ -28,7 +28,7 @@ if [ ! -d $TERRAFORM_REPO ]; then
 fi
 
 # prompt to be sure
-echo -n "Shutting down ingest services in $ENVIRONMENT... ARE YOU SURE? [yes/no] "
+echo -n "Shutting down ALL ingest services in $ENVIRONMENT... ARE YOU SURE? [yes/no] "
 read x
 if [ "$x" != "yes" ]; then
   echo "Aborted"
@@ -37,8 +37,11 @@ fi
 
 CWD=$(pwd)
 
-SERVICES="virgo4-doc-delete \
-          virgo4-doc-ingest \
+SERVICES="virgo4-default-doc-delete \
+          virgo4-image-doc-delete \
+          virgo4-default-doc-ingest \
+          virgo4-image-doc-ingest \
+          virgo4-dynamic-cache-reprocess \
           virgo4-dynamic-marc-convert \
           virgo4-dynamic-marc-ingest \
           virgo4-hathi-cache-reprocess \
@@ -47,10 +50,14 @@ SERVICES="virgo4-doc-delete \
           virgo4-sirsi-cache-reprocess \
           virgo4-sirsi-marc-convert \
           virgo4-sirsi-marc-ingest \
-          virgo4-solr-delete \
-          virgo4-solr-update \
+          virgo4-sirsi-full-marc-ingest \
+          virgo4-default-solr-delete \
+          virgo4-image-solr-delete \
+          virgo4-default-solr-update \
+          virgo4-image-solr-update \
           virgo4-source-cache \
-          virgo4-tracksys-enrich"
+          virgo4-image-tracksys-enrich \
+          virgo4-sirsi-tracksys-enrich"
 
 
 for service in $SERVICES; do
