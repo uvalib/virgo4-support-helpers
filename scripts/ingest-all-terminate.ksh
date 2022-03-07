@@ -4,6 +4,11 @@
 
 #set -x
 
+# source common helpers
+FULL_NAME=$(realpath $0)
+SCRIPT_DIR=$(dirname $FULL_NAME)
+. $SCRIPT_DIR/common.ksh
+
 # check command line use
 if [ $# -ne 1 ]; then
    echo "use: $(basename $0) <staging|production>"
@@ -21,7 +26,7 @@ case $ENVIRONMENT in
 esac
 
 # infrastructure location definition
-TERRAFORM_REPO=../terraform-infrastructure
+TERRAFORM_REPO=$SCRIPT_DIR/../../terraform-infrastructure
 if [ ! -d $TERRAFORM_REPO ]; then
    echo "ERROR: $TERRAFORM_REPO is not available, aborting"
    exit 1
