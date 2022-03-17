@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# A helper to purge sirsi items from Solr that are older than the supplied date.
+# A helper to purge image items from Solr that are older than the supplied date.
 #
 
 #set -x
@@ -37,7 +37,7 @@ case $ENVIRONMENT in
    ;;
 esac
 
-SOLR_URL=$SOLR_MASTER/solr/test_core
+SOLR_URL=$SOLR_MASTER/solr/images_core
 echo ""; echo ""
 read -r -p "Purging $SOLR_URL older than $DATE: ARE YOU SURE? [Y/n]? " response
 case "$response" in
@@ -47,7 +47,7 @@ case "$response" in
       exit 1
 esac
 
-PAYLOAD="<delete><query>timestamp:[* TO \"$DATE\"] AND data_source_f:sirsi</query></delete>"
+PAYLOAD="<delete><query>timestamp:[* TO \"$DATE\"]</query></delete>"
 SOLR_QUERY="$SOLR_URL/update?commit=true"
 curl -X POST $SOLR_QUERY -H "Content-Type: text/xml" --data-binary "$PAYLOAD"
 exit_on_error $? "ERROR: $? purging Solr, aborting"
