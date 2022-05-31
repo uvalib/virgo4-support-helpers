@@ -44,6 +44,9 @@ while read -r line; do
    RDS)
       NAME_TAG=$($AWS_TOOL rds list-tags-for-resource --resource-name $ARN | $JQ_TOOL -r '.TagList[] | select(.Key == "Name") .Value')
    ;;
+   S3)
+      NAME_TAG=$(echo $ARN | awk -F: '{print $6}')
+   ;;
    default)
    ;;
    esac
