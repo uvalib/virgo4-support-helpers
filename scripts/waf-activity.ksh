@@ -86,10 +86,10 @@ GLOBAL_IP_BLOCK_RULE_ID=a640b6cf-79f4-49d5-ac8b-83e42f5b3229
 # maximum number of results
 MAX_RESULTS=500
 
-echo "IP rate limit (regional):"
+echo "IP rate limit ($ENVIRONMENT):"
 aws waf-regional get-sampled-requests --web-acl-id $REGIONAL_ACL_ID --rule-id $REGIONAL_RATE_LIMIT_RULE_ID --max-items $MAX_RESULTS --time-window StartTime=$START_TIME,EndTime=$END_TIME | jq ".SampledRequests[].Request.ClientIP" | tr -d "\"" | sort | uniq -c
 
-echo "IP block (regional):"
+echo "IP block ($ENVIRONMENT):"
 aws waf-regional get-sampled-requests --web-acl-id $REGIONAL_ACL_ID --rule-id $REGIONAL_IP_BLOCK_RULE_ID --max-items $MAX_RESULTS --time-window StartTime=$START_TIME,EndTime=$END_TIME | jq ".SampledRequests[].Request.ClientIP" | tr -d "\"" | sort | uniq -c
 
 echo "IP rate limit (global):"
