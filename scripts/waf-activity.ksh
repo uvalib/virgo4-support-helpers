@@ -65,12 +65,14 @@ if [ -z "$AWS_REGION" ]; then
 fi
 
 # times required in UTC
-UTC_END=5
+UTC_END=4
 UTC_START=$(( $UTC_END - $BACK_HOURS))
 
 # calculate our time window (convertot UTC)
 START_TIME=$(date -v+${UTC_START}H +"%Y-%m-%dT%H:%M:%SZ")
 END_TIME=$(date -v+${UTC_END}H +"%Y-%m-%dT%H:%M:%SZ")
+#echo "start: $START_TIME"
+#echo "end:   $END_TIME"
 
 # global ACL ID
 GLOBAL_ACL_ID=118ef938-40e9-42ac-8f67-85166dce86e8
