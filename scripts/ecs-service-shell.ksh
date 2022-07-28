@@ -11,7 +11,7 @@ SCRIPT_DIR=$(dirname $FULL_NAME)
 . $SCRIPT_DIR/common.ksh
 
 function show_use_and_exit {
-   error_and_exit "use: $(basename $0) <uva|lic> <staging|test|production|global> <service name>"
+   error_and_exit "use: $(basename $0) <uva|lic> <staging|test|production|global> <service name> [shell (default /bin/bash)]"
 }
 
 # ensure correct usage
@@ -26,6 +26,9 @@ ENVIRONMENT=$1
 shift
 SERVICE=$1
 shift
+SHELL=${1:-/bin/bash}
+
+echo ${SHELL}
 
 # validate the cluster parameter
 case ${CLUSTER} in
@@ -97,7 +100,7 @@ ${AWS_TOOL} ecs execute-command  \
     --cluster ${CLUSTER_NAME} \
     --task ${TASK_ID} \
     --container ${SERVICE_NAME} \
-    --command "/bin/bash -l" \
+    --command "/bin/sh -l" \
     --interactive
 
 # all over
