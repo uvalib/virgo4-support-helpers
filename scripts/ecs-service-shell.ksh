@@ -28,8 +28,6 @@ SERVICE=$1
 shift
 SHELL=${1:-/bin/bash}
 
-echo ${SHELL}
-
 # validate the cluster parameter
 case ${CLUSTER} in
    uva|lic)
@@ -100,7 +98,7 @@ ${AWS_TOOL} ecs execute-command  \
     --cluster ${CLUSTER_NAME} \
     --task ${TASK_ID} \
     --container ${SERVICE_NAME} \
-    --command "/bin/sh -l" \
+    --command "${SHELL} -l" \
     --interactive
 
 # all over
