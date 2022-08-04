@@ -48,7 +48,7 @@ esac
 
 # disabled because we sometimes operate using roles
 # check our environment requirements
-# check_aws_environment
+check_aws_environment
 
 # ensure we have the necessary tools available
 AWS_TOOL=aws
@@ -63,8 +63,6 @@ if [ "$ENVIRONMENT" != "global" ]; then
 else
   SERVICE_NAME=${SERVICE}
 fi
-
-#ARN="arn:aws:ecs:${AWS_DEFAULT_REGION}:115119339709:service/${CLUSTER_NAME}/${SERVICE_NAME}"
 
 # check that shell access is enabled
 ENABLE=$(${AWS_TOOL} ecs describe-services --cluster ${CLUSTER_NAME} --services ${SERVICE_NAME} --region ${AWS_DEFAULT_REGION} | ${JQ_TOOL} -r ".services[].enableExecuteCommand")
