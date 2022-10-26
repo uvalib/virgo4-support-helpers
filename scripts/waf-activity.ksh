@@ -50,19 +50,15 @@ case $BACK_HOURS in
    ;;
 esac
 
-# verify environment
-if [ -z "$AWS_ACCESS_KEY_ID" ]; then
-   echo "ERROR: AWS_ACCESS_KEY_ID is not definied, aborting"
-   exit 1
-fi
-if [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
-   echo "ERROR: AWS_SECRET_ACCESS_KEY is not definied, aborting"
-   exit 1
-fi
-if [ -z "$AWS_REGION" ]; then
-   echo "ERROR: AWS_REGION is not definied, aborting"
-   exit 1
-fi
+# disabled because we sometimes operate using roles
+# check our environment requirements
+# check_aws_environment
+
+# ensure we have the necessary tools available
+AWS_TOOL=aws
+ensure_tool_available $AWS_TOOL
+JQ_TOOL=jq
+ensure_tool_available $JQ_TOOL
 
 # times required in UTC
 UTC_END=4
@@ -73,6 +69,12 @@ START_TIME=$(date -v+${UTC_START}H +"%Y-%m-%dT%H:%M:%SZ")
 END_TIME=$(date -v+${UTC_END}H +"%Y-%m-%dT%H:%M:%SZ")
 #echo "start: $START_TIME"
 #echo "end:   $END_TIME"
+
+# define detailed output files
+RATE_LIMIT_GLOBAL_FULL=/tmp/rate-limit-global.txt
+IP_BLOCK_GLOBAL_FULL=/tmp/ip-block-global.txt
+RATE_LIMIT_ENV_FULL=/tmp/rate-limit-${ENVIRONMENT}.txt
+IP_BLOCK_ENV_FULL=/tmp/ip-block-${ENVIRONMENT}.txt
 
 # global ACL ID
 GLOBAL_ACL_ID=118ef938-40e9-42ac-8f67-85166dce86e8
@@ -89,16 +91,54 @@ GLOBAL_IP_BLOCK_RULE_ID=a640b6cf-79f4-49d5-ac8b-83e42f5b3229
 MAX_RESULTS=500
 
 echo "IP rate limit ($ENVIRONMENT):"
-aws waf-regional get-sampled-requests --web-acl-id $REGIONAL_ACL_ID --rule-id $REGIONAL_RATE_LIMIT_RULE_ID --max-items $MAX_RESULTS --time-window StartTime=$START_TIME,EndTime=$END_TIME | jq ".SampledRequests[].Request.ClientIP" | tr -d "\"" | sort | uniq -c
+aws waf-regional get-sampled-requests --web-acl-id $REGIONAL_ACL_ID --rule-id $REGIONAL_RATE_LIMIT_RULE_ID --max-items $MAX_RESULTS --time-window StartTime=$START_TIME,EndTime=$END_TIME > ${RATE_LIMIT_ENV_FULL}
+cat ${RATE_LIMIT_ENV_FULL} | ${JQ_TOOL} -r ".SampledRequests[].Request.ClientIP" | sort | uniq -c
 
 echo "IP block ($ENVIRONMENT):"
-aws waf-regional get-sampled-requests --web-acl-id $REGIONAL_ACL_ID --rule-id $REGIONAL_IP_BLOCK_RULE_ID --max-items $MAX_RESULTS --time-window StartTime=$START_TIME,EndTime=$END_TIME | jq ".SampledRequests[].Request.ClientIP" | tr -d "\"" | sort | uniq -c
+aws waf-regional get-sampled-requests --web-acl-id $REGIONAL_ACL_ID --rule-id $REGIONAL_IP_BLOCK_RULE_ID --max-items $MAX_RESULTS --time-window StartTime=$START_TIME,EndTime=$END_TIME > ${IP_BLOCK_ENV_FULL}
+cat ${IP_BLOCK_ENV_FULL} | ${JQ_TOOL} -r ".SampledRequests[].Request.ClientIP" | sort | uniq -c
 
 echo "IP rate limit (global):"
-aws waf get-sampled-requests --web-acl-id $GLOBAL_ACL_ID --rule-id $GLOBAL_RATE_LIMIT_RULE_ID --max-items $MAX_RESULTS --time-window StartTime=$START_TIME,EndTime=$END_TIME | jq ".SampledRequests[].Request.ClientIP" | tr -d "\"" | sort | uniq -c
+aws waf get-sampled-requests --web-acl-id $GLOBAL_ACL_ID --rule-id $GLOBAL_RATE_LIMIT_RULE_ID --max-items $MAX_RESULTS --time-window StartTime=$START_TIME,EndTime=$END_TIME > ${RATE_LIMIT_GLOBAL_FULL}
+cat ${RATE_LIMIT_GLOBAL_FULL} | ${JQ_TOOL} -r ".SampledRequests[].Request.ClientIP" | sort | uniq -c
 
 echo "IP block (global):"
-aws waf get-sampled-requests --web-acl-id $GLOBAL_ACL_ID --rule-id $GLOBAL_IP_BLOCK_RULE_ID --max-items $MAX_RESULTS --time-window StartTime=$START_TIME,EndTime=$END_TIME | jq ".SampledRequests[].Request.ClientIP" | tr -d "\"" | sort | uniq -c
+aws waf get-sampled-requests --web-acl-id $GLOBAL_ACL_ID --rule-id $GLOBAL_IP_BLOCK_RULE_ID --max-items $MAX_RESULTS --time-window StartTime=$START_TIME,EndTime=$END_TIME > ${IP_BLOCK_GLOBAL_FULL}
+cat ${IP_BLOCK_GLOBAL_FULL} | ${JQ_TOOL} -r ".SampledRequests[].Request.ClientIP" | sort | uniq -c
+
+echo ""
+echo "Full details in:"
+echo " ${RATE_LIMIT_ENV_FULL}"
+echo " ${IP_BLOCK_ENV_FULL}"
+echo " ${RATE_LIMIT_GLOBAL_FULL}"
+echo " ${IP_BLOCK_GLOBAL_FULL}"
+
+# define URI output files
+RATE_LIMIT_GLOBAL_URI=/tmp/rate-limit-global.uri
+IP_BLOCK_GLOBAL_URI=/tmp/ip-block-global.uri
+RATE_LIMIT_ENV_URI=/tmp/rate-limit-${ENVIRONMENT}.uri
+IP_BLOCK_ENV_URI=/tmp/ip-block-${ENVIRONMENT}.uri
+
+# generate the list of URL's
+HOSTNAMES=/tmp/hostnames.txt
+cat ${RATE_LIMIT_ENV_FULL} | ${JQ_TOOL} -r ".SampledRequests[].Request | .Headers[] | select(.Name==\"host\") | .Value" > ${HOSTNAMES}
+cat ${RATE_LIMIT_ENV_FULL} | ${JQ_TOOL} -r ".SampledRequests[].Request.URI" | paste -d: ${HOSTNAMES} - > ${RATE_LIMIT_ENV_URI}
+
+cat ${RATE_LIMIT_GLOBAL_FULL} | ${JQ_TOOL} -r ".SampledRequests[].Request | .Headers[] | select(.Name==\"host\") | .Value" > ${HOSTNAMES}
+cat ${RATE_LIMIT_GLOBAL_FULL} | ${JQ_TOOL} -r ".SampledRequests[].Request.URI" | paste -d: ${HOSTNAMES} - > ${RATE_LIMIT_GLOBAL_URI}
+
+cat ${IP_BLOCK_ENV_FULL} | ${JQ_TOOL} -r ".SampledRequests[].Request | .Headers[] | select(.Name==\"Host\") | .Value" > ${HOSTNAMES}
+cat ${IP_BLOCK_ENV_FULL} | ${JQ_TOOL} -r ".SampledRequests[].Request.URI" | paste -d: ${HOSTNAMES} - > ${IP_BLOCK_ENV_URI}
+
+cat ${IP_BLOCK_GLOBAL_FULL} | ${JQ_TOOL} -r ".SampledRequests[].Request | .Headers[] | select(.Name==\"Host\") | .Value" > ${HOSTNAMES}
+cat ${IP_BLOCK_GLOBAL_FULL} | ${JQ_TOOL} -r ".SampledRequests[].Request.URI" | paste -d: ${HOSTNAMES} - > ${IP_BLOCK_GLOBAL_URI}
+
+echo ""
+echo "Hostname/URI's in:"
+echo " ${RATE_LIMIT_ENV_URI}"
+echo " ${IP_BLOCK_ENV_URI}"
+echo " ${RATE_LIMIT_GLOBAL_URI}"
+echo " ${IP_BLOCK_GLOBAL_URI}"
 
 exit $?
 
