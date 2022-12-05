@@ -79,13 +79,18 @@ case ${ENABLE} in
       ;;
 esac
 
+TMPFILE=/tmp/arns.$$
+
 # get the task ID
-ARNS=$(${AWS_TOOL} ecs list-tasks --cluster ${CLUSTER_NAME} --service-name ${SERVICE_NAME} --region ${AWS_DEFAULT_REGION} | ${JQ_TOOL} -r ".taskArns[]")
-COUNT=$(echo ${ARNS} | wc -l | awk '{print $1}')
-ARN=$(echo ${ARNS} | head -1)
+${AWS_TOOL} ecs list-tasks --cluster ${CLUSTER_NAME} --service-name ${SERVICE_NAME} --region ${AWS_DEFAULT_REGION} | ${JQ_TOOL} -r ".taskArns[]" > ${TMPFILE}
+COUNT=$(cat ${TMPFILE} | wc -l | awk '{print $1}')
+ARN=$(cat ${TMPFILE} | head -1)
 if [ "$COUNT" != "1" ]; then
    echo "INFO: service ${SERVICE_NAME} has multiple tasks, selecting the first one"
 fi
+
+# remove tempfile
+rm -f ${TMPFILE} > /dev/null 2>&1
 
 # extract the task ID from the ARN
 TASK_ID=$(echo ${ARN} | awk -F/ '{print $3}')
