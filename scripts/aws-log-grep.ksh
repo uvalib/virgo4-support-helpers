@@ -41,7 +41,7 @@ START_EPOCH=$(date -ujf "%Y/%m/%d %H:%M:%S" "$START" +%s)
 START_EPOCH=$((START_EPOCH + 14400))
 START_MILLIS=${START_EPOCH}000
 
-$AWS_TOOL logs filter-log-events --log-group-name $LOG_GROUP --start-time $START_MILLIS --filter-pattern "$PATTERN" --output text --no-paginate
+$AWS_TOOL logs filter-log-events --log-group-name $LOG_GROUP --start-time $START_MILLIS --filter-pattern "$PATTERN" --output text --max-items 1000000
 
 # all over
 exit 0
