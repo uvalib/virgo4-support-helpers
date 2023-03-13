@@ -26,18 +26,9 @@ shift
 
 # validate the environment parameter
 case $ENVIRONMENT in
-   staging)
-   # staging regional_acl_id (fixed)
-   REGIONAL_ACL_ID=7df0b7b6-0284-4f8a-bfa4-507645b788aa
+   staging|test|production)
    ;;
-   test)
-   # test regional_acl_id (fixed)
-   REGIONAL_ACL_ID=fb9121ab-d8a1-43d5-a5ba-4b9e536d1e35
-   ;;
-   production)
-   # production regional_acl_id (fixed)
-   REGIONAL_ACL_ID=69ebf5a1-5eaf-496d-b919-e95ed07dc3ee
-   ;;
+
    *) show_use_and_exit
    ;;
 esac
@@ -61,7 +52,7 @@ JQ_TOOL=jq
 ensure_tool_available $JQ_TOOL
 
 # times required in UTC
-UTC_END=4
+UTC_END=5
 UTC_START=$(( $UTC_END - $BACK_HOURS))
 
 # calculate our time window (convertot UTC)
@@ -76,34 +67,37 @@ IP_BLOCK_GLOBAL_FULL=/tmp/ip-block-global.txt
 RATE_LIMIT_ENV_FULL=/tmp/rate-limit-${ENVIRONMENT}.txt
 IP_BLOCK_ENV_FULL=/tmp/ip-block-${ENVIRONMENT}.txt
 
+# regional ACL ID
+REGIONAL_ACL_ID=$(${AWS_TOOL} waf-regional list-web-acls | ${JQ_TOOL} -r ".WebACLs[] | select(.Name==\"waf-${ENVIRONMENT}-regional-acl\") | .WebACLId")
+
 # global ACL ID
-GLOBAL_ACL_ID=118ef938-40e9-42ac-8f67-85166dce86e8
+GLOBAL_ACL_ID=$(${AWS_TOOL} waf list-web-acls | ${JQ_TOOL} -r ".WebACLs[].WebACLId")
 
 # regional rule ID's
-REGIONAL_RATE_LIMIT_RULE_ID=3177c7b1-36e7-449e-b06a-6dccee78d12f
-REGIONAL_IP_BLOCK_RULE_ID=51cccbb1-9e9d-4ad8-b21d-203e1b70b360
+REGIONAL_RATE_LIMIT_RULE_ID=$(${AWS_TOOL} waf-regional list-rate-based-rules | ${JQ_TOOL} -r ".Rules[].RuleId")
+REGIONAL_IP_BLOCK_RULE_ID=$(${AWS_TOOL} waf-regional list-rules | ${JQ_TOOL} -r ".Rules[] | select(.Name==\"waf-regional-ip-block\") | .RuleId")
 
 # global rule ID's
-GLOBAL_RATE_LIMIT_RULE_ID=4a14f21d-7c92-498c-9dd0-8f6f0eca3066
-GLOBAL_IP_BLOCK_RULE_ID=a640b6cf-79f4-49d5-ac8b-83e42f5b3229
+GLOBAL_RATE_LIMIT_RULE_ID=$(${AWS_TOOL} waf list-rate-based-rules | ${JQ_TOOL} -r ".Rules[].RuleId")
+GLOBAL_IP_BLOCK_RULE_ID=$(${AWS_TOOL} waf list-rules | ${JQ_TOOL} -r ".Rules[] | select(.Name==\"waf-global-ip-block\") | .RuleId")
 
 # maximum number of results
 MAX_RESULTS=500
 
 echo "IP rate limit ($ENVIRONMENT):"
-aws waf-regional get-sampled-requests --web-acl-id $REGIONAL_ACL_ID --rule-id $REGIONAL_RATE_LIMIT_RULE_ID --max-items $MAX_RESULTS --time-window StartTime=$START_TIME,EndTime=$END_TIME > ${RATE_LIMIT_ENV_FULL}
+${AWS_TOOL} waf-regional get-sampled-requests --web-acl-id $REGIONAL_ACL_ID --rule-id $REGIONAL_RATE_LIMIT_RULE_ID --max-items $MAX_RESULTS --time-window StartTime=$START_TIME,EndTime=$END_TIME > ${RATE_LIMIT_ENV_FULL}
 cat ${RATE_LIMIT_ENV_FULL} | ${JQ_TOOL} -r ".SampledRequests[].Request.ClientIP" | sort | uniq -c
 
 echo "IP block ($ENVIRONMENT):"
-aws waf-regional get-sampled-requests --web-acl-id $REGIONAL_ACL_ID --rule-id $REGIONAL_IP_BLOCK_RULE_ID --max-items $MAX_RESULTS --time-window StartTime=$START_TIME,EndTime=$END_TIME > ${IP_BLOCK_ENV_FULL}
+${AWS_TOOL} waf-regional get-sampled-requests --web-acl-id $REGIONAL_ACL_ID --rule-id $REGIONAL_IP_BLOCK_RULE_ID --max-items $MAX_RESULTS --time-window StartTime=$START_TIME,EndTime=$END_TIME > ${IP_BLOCK_ENV_FULL}
 cat ${IP_BLOCK_ENV_FULL} | ${JQ_TOOL} -r ".SampledRequests[].Request.ClientIP" | sort | uniq -c
 
 echo "IP rate limit (global):"
-aws waf get-sampled-requests --web-acl-id $GLOBAL_ACL_ID --rule-id $GLOBAL_RATE_LIMIT_RULE_ID --max-items $MAX_RESULTS --time-window StartTime=$START_TIME,EndTime=$END_TIME > ${RATE_LIMIT_GLOBAL_FULL}
+${AWS_TOOL} waf get-sampled-requests --web-acl-id $GLOBAL_ACL_ID --rule-id $GLOBAL_RATE_LIMIT_RULE_ID --max-items $MAX_RESULTS --time-window StartTime=$START_TIME,EndTime=$END_TIME > ${RATE_LIMIT_GLOBAL_FULL}
 cat ${RATE_LIMIT_GLOBAL_FULL} | ${JQ_TOOL} -r ".SampledRequests[].Request.ClientIP" | sort | uniq -c
 
 echo "IP block (global):"
-aws waf get-sampled-requests --web-acl-id $GLOBAL_ACL_ID --rule-id $GLOBAL_IP_BLOCK_RULE_ID --max-items $MAX_RESULTS --time-window StartTime=$START_TIME,EndTime=$END_TIME > ${IP_BLOCK_GLOBAL_FULL}
+${AWS_TOOL} waf get-sampled-requests --web-acl-id $GLOBAL_ACL_ID --rule-id $GLOBAL_IP_BLOCK_RULE_ID --max-items $MAX_RESULTS --time-window StartTime=$START_TIME,EndTime=$END_TIME > ${IP_BLOCK_GLOBAL_FULL}
 cat ${IP_BLOCK_GLOBAL_FULL} | ${JQ_TOOL} -r ".SampledRequests[].Request.ClientIP" | sort | uniq -c
 
 echo ""
