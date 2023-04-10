@@ -11,7 +11,7 @@ SCRIPT_DIR=$(dirname $FULL_NAME)
 . $SCRIPT_DIR/common.ksh
 
 function show_use_and_exit {
-   error_and_exit "use: $(basename $0) <uva|lic> <staging|test|production|global> <service name>"
+   error_and_exit "use: $(basename $0) <uva|lic> <staging|test|production|global> <service name(s) ...>"
 }
 
 # ensure correct usage
@@ -24,7 +24,7 @@ CLUSTER=$1
 shift
 ENVIRONMENT=$1
 shift
-SERVICE=$1
+SERVICES=$*
 shift
 
 # validate the cluster parameter
@@ -53,21 +53,28 @@ esac
 AWS_TOOL=aws
 ensure_tool_available $AWS_TOOL
 
-# related definitions
+# cluster definition
 CLUSTER_NAME=${CLUSTER}-ecs-cluster-${ENVIRONMENT}
-if [ "$ENVIRONMENT" != "global" ]; then
-  SERVICE_NAME=${SERVICE}-${ENVIRONMENT}
-else
-  SERVICE_NAME=${SERVICE}
-fi
 
-# force a new deployment of the service
-$AWS_TOOL ecs update-service --force-new-deployment --cluster $CLUSTER_NAME --service $SERVICE_NAME --region $AWS_DEFAULT_REGION > /dev/null
-res=$?
-exit_on_error $res "ERROR restarting $SERVICE_NAME, aborting"
+# for each service provided
+for service in ${SERVICES}; do
+   if [ "$ENVIRONMENT" != "global" ]; then
+     SERVICE_NAME=${service}-${ENVIRONMENT}
+   else
+     SERVICE_NAME=${service}
+   fi
+
+   # force a new deployment of the service
+   $AWS_TOOL ecs update-service --force-new-deployment --cluster $CLUSTER_NAME --service ${SERVICE_NAME} --region $AWS_DEFAULT_REGION > /dev/null
+   res=$?
+   if [ ${res} -ne 0 ]; then
+      echo "ERROR restarting ${SERVICE_NAME}..."
+   else
+      echo "${SERVICE_NAME} OK"
+   fi
+done
 
 # all over
-echo "OK"
 exit 0
 
 #
