@@ -115,10 +115,10 @@ IP_BLOCK_ENV_URI=/tmp/ip-block-${ENVIRONMENT}.uri
 
 # generate the list of URL's
 HOSTNAMES=/tmp/hostnames.txt
-cat ${RATE_LIMIT_ENV_FULL} | ${JQ_TOOL} -r ".SampledRequests[].Request | .Headers[] | select(.Name==\"host\") | .Value" > ${HOSTNAMES}
+cat ${RATE_LIMIT_ENV_FULL} | ${JQ_TOOL} -r ".SampledRequests[].Request | .Headers[] | select(.Name==\"Host\") | .Value" > ${HOSTNAMES}
 cat ${RATE_LIMIT_ENV_FULL} | ${JQ_TOOL} -r ".SampledRequests[].Request.URI" | paste -d: ${HOSTNAMES} - > ${RATE_LIMIT_ENV_URI}
 
-cat ${RATE_LIMIT_GLOBAL_FULL} | ${JQ_TOOL} -r ".SampledRequests[].Request | .Headers[] | select(.Name==\"host\") | .Value" > ${HOSTNAMES}
+cat ${RATE_LIMIT_GLOBAL_FULL} | ${JQ_TOOL} -r ".SampledRequests[].Request | .Headers[] | select(.Name==\"Host\") | .Value" > ${HOSTNAMES}
 cat ${RATE_LIMIT_GLOBAL_FULL} | ${JQ_TOOL} -r ".SampledRequests[].Request.URI" | paste -d: ${HOSTNAMES} - > ${RATE_LIMIT_GLOBAL_URI}
 
 cat ${IP_BLOCK_ENV_FULL} | ${JQ_TOOL} -r ".SampledRequests[].Request | .Headers[] | select(.Name==\"Host\") | .Value" > ${HOSTNAMES}
