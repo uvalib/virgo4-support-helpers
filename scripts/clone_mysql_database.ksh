@@ -53,17 +53,16 @@ DUMP_FILE=/tmp/dump.$$
 
 # dump the data
 echo "Dumping source dataset ($SRC_DBNAME @ $SRC_DBHOST)"
-$DUMP_TOOL -h $SRC_DBHOST -P $SRC_DBPORT -u $SRC_DBUSER --password=$SRC_DBPASSWD --set-gtid-purged=OFF --flush-privileges --routines $SRC_DBNAME > $DUMP_FILE
+MYSQL_PWD=${SRC_DBPASSWD} $DUMP_TOOL -h $SRC_DBHOST -P $SRC_DBPORT -u $SRC_DBUSER --set-gtid-purged=OFF --flush-privileges --routines $SRC_DBNAME > $DUMP_FILE
 exit_on_error $? "Extract from source failed with error $?"
 
 # restore the data
 echo "Restoring dataset ($TGT_DBNAME @ $TGT_DBHOST)"
-$RESTORE_TOOL -h $TGT_DBHOST -u $TGT_DBUSER -D $TGT_DBNAME --password=$TGT_DBPASSWD < $DUMP_FILE > /dev/null
+MYSQL_PWD=${TGT_DBPASSWD} $RESTORE_TOOL -h $TGT_DBHOST -u $TGT_DBUSER -D $TGT_DBNAME < $DUMP_FILE > /dev/null
 exit_on_error $? "Restore to target failed with error $?"
 
 # remove the files
 rm -fr $DUMP_FILE > /dev/null 2>&1
-#echo $DUMP_FILE
 
 # success
 echo "Terminating normally"
