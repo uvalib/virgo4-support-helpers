@@ -43,10 +43,15 @@ TGT_DBPASSWD=$(extract_nv_from_file $TARGET_ENV DBPASSWD)
 TGT_DBNAME=$(extract_nv_from_file $TARGET_ENV DBNAME)
 
 DUMP_FILE=/tmp/dump.$$
+REWRITE_FILE=/tmp/rewrite.$$
 
 # dump the data
 $DUMP_SCRIPT $SOURCE_ENV $DUMP_FILE
 exit_on_error $? "Terminating"
+
+# data rewrite phase
+echo "Rewriting as necessary..."
+cat $DUMP_FILE | sed -e 's/.private.production/-test.private.test/g' | sed -e 's/.internal.lib.virginia.edu/-test.internal.lib.virginia.edu/g' > $REWRITE_FILE
 
 # purge the existing database
 echo "Purging target database ($TGT_DBNAME @ $TGT_DBHOST)"
@@ -55,11 +60,12 @@ exit_on_error $? "Purge of target failed with error $?"
 
 # restore the data
 echo "Restoring dataset ($TGT_DBNAME @ $TGT_DBHOST)"
-PGPASSWORD=$TGT_DBPASSWD $PSQL_TOOL -w -q -h $TGT_DBHOST -p $TGT_DBPORT -U $TGT_DBUSER -d $TGT_DBNAME -f $DUMP_FILE > /dev/null
+PGPASSWORD=$TGT_DBPASSWD $PSQL_TOOL -w -q -h $TGT_DBHOST -p $TGT_DBPORT -U $TGT_DBUSER -d $TGT_DBNAME -f $REWRITE_FILE > /dev/null
 exit_on_error $? "Restore to target failed with error $?"
 
 # remove the files
 rm -fr $DUMP_FILE > /dev/null 2>&1
+rm -fr $REWRITE_FILE > /dev/null 2>&1
 
 # success
 echo "Terminating normally"

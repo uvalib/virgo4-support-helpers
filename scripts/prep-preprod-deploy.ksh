@@ -22,7 +22,7 @@ SEARCH_PROD_DEPLOY_DIRECTORY=../virgo4-search-production-deploy
 
 # our helpers
 DUMPER=$SCRIPT_DIR/dump_pg_database.ksh
-CLONER=$SCRIPT_DIR/clone_pg_database.ksh
+CLONER=$SCRIPT_DIR/clone_rewrite_pg_database.ksh
 MIGRATOR=$SCRIPT_DIR/run-search-migrates.ksh
 
 # ensure our helpers exist
