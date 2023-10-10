@@ -10,12 +10,12 @@ SCRIPT_DIR=$(dirname $FULL_NAME)
 . $SCRIPT_DIR/common.ksh
 
 # hack, your mileage may vary
-SEARCH_PROD_ENV=tmp/pg_production_search_readonly.env
-SEARCH_TEST_ENV=tmp/pg_test_search.env
-PDA_PROD_ENV=tmp/pg_production_pda_readonly.env
-PDA_TEST_ENV=tmp/pg_test_pda.env
-COLLECTIONS_PROD_ENV=tmp/pg_production_collections_readonly.env
-COLLECTIONS_TEST_ENV=tmp/pg_test_collections.env
+SEARCH_PROD_ENV=tmp/pg11_production_virgo4_readonly.env
+SEARCH_TEST_ENV=tmp/pg15_test_virgo4.env
+PDA_PROD_ENV=tmp/pg11_production_pda_readonly.env
+PDA_TEST_ENV=tmp/pg15_test_virgo4_pda.env
+COLLECTIONS_PROD_ENV=tmp/pg11_production_v4_collections_readonly.env
+COLLECTIONS_TEST_ENV=tmp/pg15_test_v4_collections.env
 
 TERRAFORM_DIRECTORY=../terraform-infrastructure
 SEARCH_PROD_DEPLOY_DIRECTORY=../virgo4-search-production-deploy
