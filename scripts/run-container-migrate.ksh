@@ -37,7 +37,7 @@ ensure_var_defined "$AWS_REGION" "AWS_REGION"
 
 # ensure we have the necessary tools available
 DOCKER_TOOL=docker
-#DOCKER_TOOL=docker-17.04.0
+#DOCKER_TOOL=docker-legacy
 ensure_tool_available $DOCKER_TOOL
 
 if [ "$LIVE_RUN" != "y" ]; then
