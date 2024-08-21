@@ -62,9 +62,6 @@ ensure_var_defined "$COLLECTIONS_WS_TAG" "COLLECTIONS_WS_TAG"
 CLIENT_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-client.tag)
 ensure_var_defined "$CLIENT_TAG" "CLIENT_TAG"
 
-CLIENT_LITE_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-client-lite.tag)
-ensure_var_defined "$CLIENT_LITE_TAG" "CLIENT_LITE_TAG"
-
 ILS_CONNECTOR_WS_TAG=$(cat $TAG_DIRECTORY/tags/ils-connector.tag)
 ensure_var_defined "$ILS_CONNECTOR_WS_TAG" "ILS_CONNECTOR_WS_TAG"
 
@@ -114,8 +111,7 @@ for service in availability-ws      \
                search-ws            \
                shelf-browse-ws      \
                suggestor-ws         \
-               virgo4-client        \
-               virgo4-client-lite; do
+               virgo4-client; do
 
    # ensure we use the correct tag file
    case $service in
@@ -170,10 +166,6 @@ for service in availability-ws      \
 
      virgo4-client)
         TAG=$CLIENT_TAG
-        ;;
-
-     virgo4-client-lite)
-        TAG=$CLIENT_LITE_TAG
         ;;
 
    esac
