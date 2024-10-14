@@ -21,7 +21,7 @@ JQ_TOOL=jq
 ensure_tool_available $JQ_TOOL
 
 # get the list of CDN's
-$AWS_TOOL cloudfront list-distributions | jq -r '.DistributionList.Items[] | "\(.Aliases.Items[0]) \(.DomainName) \(.Id)"' | awk '{printf "%-45s %-15s %s\n", $1, $3, $2}' | sort
+$AWS_TOOL cloudfront list-distributions | ${JQ_TOOL} -r '.DistributionList.Items[] | "\(.Aliases.Items[0]) \(.DomainName) \(.Id)"' | awk '{printf "%-45s %-15s %s\n", $1, $3, $2}' | sort
 
 # all over
 echo "Terminating normally"

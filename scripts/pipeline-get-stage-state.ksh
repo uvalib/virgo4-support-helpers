@@ -32,8 +32,10 @@ shift
 # ensure we have the necessary tools available
 AWS_TOOL=aws
 ensure_tool_available $AWS_TOOL
+JQ_TOOL=jq
+ensure_tool_available $JQ_TOOL
 
-$AWS_TOOL codepipeline get-pipeline-state --name $PIPELINE_NAME | jq ".stageStates[] | select(.stageName == \"$STAGE_NAME\") | .inboundTransitionState.enabled"
+$AWS_TOOL codepipeline get-pipeline-state --name $PIPELINE_NAME | ${JQ_TOOL} ".stageStates[] | select(.stageName == \"$STAGE_NAME\") | .inboundTransitionState.enabled"
 res=$?
 exit_on_error $res "ERROR getting pipeline state for $PIPELINE_NAME/$STAGE_NAME"
 

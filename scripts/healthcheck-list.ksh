@@ -21,7 +21,7 @@ JQ_TOOL=jq
 ensure_tool_available $JQ_TOOL
 
 # get the list of CDN's
-$AWS_TOOL route53 list-health-checks | jq -r '.HealthChecks[] | "\(.Id) \(.HealthCheckConfig.FullyQualifiedDomainName)"' | awk '{printf "%-50s %s\n", $2, $1}' | sort
+$AWS_TOOL route53 list-health-checks | ${JQ_TOOL} -r '.HealthChecks[] | "\(.Id) \(.HealthCheckConfig.FullyQualifiedDomainName)"' | awk '{printf "%-50s %s\n", $2, $1}' | sort
 
 # all over
 echo "Terminating normally"

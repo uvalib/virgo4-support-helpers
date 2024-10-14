@@ -17,8 +17,10 @@ SCRIPT_DIR=$(dirname $FULL_NAME)
 # ensure we have the necessary tools available
 AWS_TOOL=aws
 ensure_tool_available $AWS_TOOL
+JQ_TOOL=jq
+ensure_tool_available $JQ_TOOL
 
-$AWS_TOOL codepipeline list-pipelines | jq ".pipelines[] .name" | tr -d "\""
+$AWS_TOOL codepipeline list-pipelines | ${JQ_TOOL} -r '.pipelines[] | "\(.name), \(.pipelineType)"'
 res=$?
 exit_on_error $res "ERROR getting pipeline names"
 
