@@ -64,7 +64,7 @@ S3_PUT_TOOL=$SCRIPT_DIR/s3-put.ksh
 ensure_file_exists $S3_PUT_TOOL
 
 # tool for sending S3 file notifications
-FILE_NOTIFY_TOOL=bin/virgo4-file-notify
+FILE_NOTIFY_TOOL=bin/sqs-file-notify
 ensure_file_exists $FILE_NOTIFY_TOOL
 
 # extract the needed values from the database environment

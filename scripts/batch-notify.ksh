@@ -19,7 +19,7 @@ if [ ! -f $INPUT_FILE ]; then
 fi
 
 # tool definition
-TOOL=bin/virgo4-file-notify
+TOOL=bin/sqs-file-notify
 if [ ! -x $TOOL ]; then
    echo "ERROR: $TOOL is not available, aborting"
    exit 1
