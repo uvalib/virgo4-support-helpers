@@ -63,8 +63,7 @@ for service in availability-ws      \
                search-ws            \
                shelf-browse-ws      \
                suggestor-ws         \
-               virgo4-client        \
-               virgo4-client-lite; do
+               virgo4-client; do
 
    echo "Undeploy $service"
 
@@ -72,7 +71,7 @@ for service in availability-ws      \
       cd $BASE_DIR/$service
       exit_on_error $? "$service asset directory missing"
 
-      $TERRAFORM_TOOL init
+      $TERRAFORM_TOOL init --upgrade
       exit_on_error $? "$service init failed"
 
       $TERRAFORM_TOOL workspace select test
