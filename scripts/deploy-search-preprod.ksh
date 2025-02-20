@@ -65,9 +65,6 @@ ensure_var_defined "$CLIENT_TAG" "CLIENT_TAG"
 ILS_CONNECTOR_TAG=$(cat $TAG_DIRECTORY/tags/ils-connector-ws.tag)
 ensure_var_defined "$ILS_CONNECTOR_TAG" "ILS_CONNECTOR_TAG"
 
-ILS_CONNECTOR_WS_TAG=$(cat $TAG_DIRECTORY/tags/ils-connector.tag)
-ensure_var_defined "$ILS_CONNECTOR_WS_TAG" "ILS_CONNECTOR_WS_TAG"
-
 PDA_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-pda-ws.tag)
 ensure_var_defined "$PDA_WS_TAG" "PDA_WS_TAG"
 
@@ -106,7 +103,6 @@ for service in availability-ws      \
                citations-ws         \
                collections-ws       \
                ils-connector        \
-               ils-connector-ws     \
                pda-ws               \
                pool-eds-ws          \
                pool-jmrl-ws         \
@@ -134,10 +130,6 @@ for service in availability-ws      \
 
      ils-connector)
         TAG=$ILS_CONNECTOR_TAG
-        ;;
-
-     ils-connector-ws)
-        TAG=$ILS_CONNECTOR_WS_TAG
         ;;
 
      pda-ws)

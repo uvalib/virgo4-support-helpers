@@ -55,7 +55,6 @@ for service in availability-ws      \
                citations-ws         \
                collections-ws       \
                ils-connector        \
-               ils-connector-ws     \
                pda-ws               \
                pool-eds-ws          \
                pool-jmrl-ws         \
