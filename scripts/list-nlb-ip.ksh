@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# A helper to get the list of loadbalancer IP addresses
+# A helper to get the list of NLB IP addresses
 #
 
 #set -x
@@ -55,7 +55,7 @@ AWK_TOOL=awk
 ensure_tool_available ${AWK_TOOL}
 
 # get load balancer name
-LB_NAME=$(${AWS_TOOL} elbv2 describe-load-balancers --names "uva-alb-${SCOPE}-${ENVIRONMENT}" | ${JQ_TOOL} -r '.LoadBalancers[0].LoadBalancerArn' | ${AWK_TOOL} -F/ '{printf "%s/%s/%s", $2, $3, $4}')
+LB_NAME=$(${AWS_TOOL} elbv2 describe-load-balancers --names "uva-nlb-${SCOPE}-${ENVIRONMENT}" | ${JQ_TOOL} -r '.LoadBalancers[0].LoadBalancerArn' | ${AWK_TOOL} -F/ '{printf "%s/%s/%s", $2, $3, $4}')
 
 ${AWS_TOOL} ec2 describe-network-interfaces --filters Name=description,Values="ELB ${LB_NAME}" --query 'NetworkInterfaces[*].PrivateIpAddresses[*].PrivateIpAddress' --output text | sort -n
 
