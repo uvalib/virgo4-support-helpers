@@ -50,9 +50,6 @@ ensure_dir_exists $TAG_DIRECTORY/tags
 ensure_dir_exists $TERRAFORM_ASSETS/virgo4.lib.virginia.edu
 
 # get our version tags
-AVAILABILITY_WS_TAG=$(cat $TAG_DIRECTORY/tags/availability-ws.tag)
-ensure_var_defined "$AVAILABILITY_WS_TAG" "AVAILABILITY_WS_TAG"
-
 CITATIONS_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-citations-ws.tag)
 ensure_var_defined "$CITATIONS_WS_TAG" "CITATIONS_WS_TAG"
 
@@ -99,8 +96,7 @@ fi
 
 BASE_DIR=$TERRAFORM_ASSETS/virgo4.lib.virginia.edu/ecs-tasks/production
 
-for service in availability-ws      \
-               citations-ws         \
+for service in citations-ws         \
                collections-ws       \
                ils-connector        \
                pda-ws               \
@@ -115,10 +111,6 @@ for service in availability-ws      \
 
    # ensure we use the correct tag file
    case $service in
-
-     availability-ws)
-        TAG=$AVAILABILITY_WS_TAG
-        ;;
 
      citations-ws)
         TAG=$CITATIONS_WS_TAG

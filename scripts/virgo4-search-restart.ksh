@@ -37,8 +37,7 @@ RESTART_TOOL=${SCRIPT_DIR}/ecs-service-restart.ksh
 ensure_file_exists ${RESTART_TOOL}
 
 # define the list of services we are interested in
-SERVICES="availability-ws          \
-          ils-connector-ws         \
+SERVICES="ils-connector-ws         \
           virgo4-client            \
           virgo4-client-lite       \
           citations-ws             \
