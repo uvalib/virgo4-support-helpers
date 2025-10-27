@@ -62,9 +62,6 @@ ensure_var_defined "$CLIENT_TAG" "CLIENT_TAG"
 ILS_CONNECTOR_TAG=$(cat $TAG_DIRECTORY/tags/ils-connector-ws.tag)
 ensure_var_defined "$ILS_CONNECTOR_TAG" "ILS_CONNECTOR_TAG"
 
-PDA_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-pda-ws.tag)
-ensure_var_defined "$PDA_WS_TAG" "PDA_WS_TAG"
-
 POOL_EDS_WS_TAG=$(cat $TAG_DIRECTORY/tags/virgo4-pool-eds-ws.tag)
 ensure_var_defined "$POOL_EDS_WS_TAG" "POOL_EDS_WS_TAG"
 
@@ -99,7 +96,6 @@ BASE_DIR=$TERRAFORM_ASSETS/virgo4.lib.virginia.edu/ecs-tasks/production
 for service in citations-ws         \
                collections-ws       \
                ils-connector        \
-               pda-ws               \
                pool-eds-ws          \
                pool-jmrl-ws         \
                pool-solr-ws         \
@@ -122,10 +118,6 @@ for service in citations-ws         \
 
      ils-connector)
         TAG=$ILS_CONNECTOR_TAG
-        ;;
-
-     pda-ws)
-        TAG=$PDA_WS_TAG
         ;;
 
      pool-eds-ws)

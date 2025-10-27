@@ -54,7 +54,6 @@ BASE_DIR=$(realpath $TERRAFORM_ASSETS)/virgo4.lib.virginia.edu/ecs-tasks/product
 for service in citations-ws         \
                collections-ws       \
                ils-connector        \
-               pda-ws               \
                pool-eds-ws          \
                pool-jmrl-ws         \
                pool-solr-ws         \
