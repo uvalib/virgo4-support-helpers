@@ -27,6 +27,9 @@ shift
 SERVICE=$1
 shift
 SHELL=${1:-/bin/bash}
+shift
+INSTANCE=${1:-1}
+shift
 
 # validate the cluster parameter
 case ${CLUSTER} in
@@ -84,10 +87,15 @@ TMPFILE=/tmp/arns.$$
 # get the task ID
 ${AWS_TOOL} ecs list-tasks --cluster ${CLUSTER_NAME} --service-name ${SERVICE_NAME} --region ${AWS_DEFAULT_REGION} | ${JQ_TOOL} -r ".taskArns[]" > ${TMPFILE}
 COUNT=$(cat ${TMPFILE} | wc -l | awk '{print $1}')
-ARN=$(cat ${TMPFILE} | head -1)
 if [ "$COUNT" != "1" ]; then
-   echo "INFO: service ${SERVICE_NAME} has multiple tasks, selecting the first one"
+   if [ ${INSTANCE} -gt ${COUNT} ]; then
+      INSTANCE=${COUNT}
+   fi
+   echo "INFO: service ${SERVICE_NAME} has ${COUNT} instances, selecting task number ${INSTANCE}"
+else
+   INSTANCE=1
 fi
+ARN=$(cat ${TMPFILE} | sed -n "${INSTANCE}p")
 
 # remove tempfile
 rm -f ${TMPFILE} > /dev/null 2>&1
