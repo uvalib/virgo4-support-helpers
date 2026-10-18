@@ -10,10 +10,10 @@ SCRIPT_DIR=$(dirname $FULL_NAME)
 . $SCRIPT_DIR/common.ksh
 
 # hack, your mileage may vary
-SEARCH_PROD_ENV=tmp/pg15_production_virgo4_readonly.env
-SEARCH_TEST_ENV=tmp/pg15_test_virgo4.env
-COLLECTIONS_PROD_ENV=tmp/pg15_production_v4_collections_readonly.env
-COLLECTIONS_TEST_ENV=tmp/pg15_test_v4_collections.env
+SEARCH_PROD_ENV=tmp/pg16_production_virgo4_readonly.env
+SEARCH_TEST_ENV=tmp/pg16_test_virgo4.env
+COLLECTIONS_PROD_ENV=tmp/pg16_production_v4_collections_readonly.env
+COLLECTIONS_TEST_ENV=tmp/pg16_test_v4_collections.env
 
 # ensure our configs exist
 ensure_file_exists ${SEARCH_PROD_ENV}
